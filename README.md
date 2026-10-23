@@ -1,53 +1,95 @@
-# ReFra
-> An Android Gallery app built with Jetpack Compose.
-> 
-> The goal of this project is to create and bring the Gallery app everyone wants, with the features everyone needs. FOSS
+<div align="center">
+  <img src="./screenshots/main_photo.png" alt="Gallery — clean, modern photo browsing" width="100%" />
 
-![Downloads](https://img.shields.io/github/downloads/IacobIonut01/Gallery/total?color=%23247EE0&label=Downloads)
-[![CI](https://github.com/IacobIonut01/Gallery/actions/workflows/nightly.yml/badge.svg?branch=main)](https://github.com/IacobIonut01/Gallery/actions/workflows/nightly.yml)
-![License](https://img.shields.io/github/license/IacobIonut01/Gallery?color=%23247EE0)
-[![Crowdin](https://badges.crowdin.net/gallery-compose/localized.svg)](https://crowdin.com/project/gallery-compose)
-![GitHub Repo stars](https://img.shields.io/github/stars/IacobIonut01/Gallery?color=%23247EE0)
+  <br />
 
-![](./screenshots/preview.png)
-[![Crowdin](./screenshots/items/support_banner.png)](https://crowdin.com/project/gallery-compose)
-[![Community](./screenshots/items/community_banner.png)](https://t.me/GalleryCompose)
+  # Gallery
 
-## Download
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-    alt="Get it on F-Droid"
-    height="80">](https://f-droid.org/packages/com.dot.gallery)
-[<img 
-    alt='Get it on Google Play'
-    src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'
-    height="80" />](https://play.google.com/store/apps/details?id=com.dot.gallery.gplay&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
-[<img 
-    alt='Get it on GitHub'
-    src='./screenshots/items/get-it-on-github.png'
-    height="80" />](https://github.com/IacobIonut01/Gallery/releases/latest)
+  **Your memories. Beautifully organized.**
 
-## Support
-- Translate the project using the link from above
-- Donations:
-    - Use the links on the right side of the repo (Sponsor me)
-    - More options available in-app (Settings -> Donate)
-## Frequent Questions
-- Why 'ReFra'?
-    - Refra is a short form of 'refraction', which is the bending of light when it passes through different mediums. This app aims to refract our perception of media files, making them more accessible and easier to manage.
-- What is the `nomaps` variant?
-    - The `nomaps` variant is a version of the app that does not include the maps features - Map Preview, Location Map Viewer. This is useful for users who do not need this feature and want to remove unecessary permissions like INTERNET access.
-- Why Google Play version is 'Paid'?
-    - It's just another way to support the project while getting back automatic updates via Google Play
-- Why Android 11 is the minimum version required?
-    - Some Media features and APIs require Android 11 as a minimum version [Trash feature, most APIs used in the app]
-- Will you support lower android versions?
-    - While this is not a priority right now, I do have in mind to include support for lower Android versions at a cost of reduced features. If anyone volntueers to do so before me can request a pull request.
-- Can I verify the downloaded APK file?
-    - Checksums of APKs are provided in the release notes. The signing certificate fingerprint is listed below:
-      - SHA-256: `78:46:05:DD:50:75:BE:05:82:78:A5:42:5C:BD:E5:21:31:62:CB:B4:59:1B:44:28:F4:4E:75:E0:8C:C6:43:8A`
-      - SHA-1: `AD:93:69:27:F2:3B:33:99:FC:C0:B2:8A:25:44:C8:1C:AA:42:B0:9A`
-      - MD5: `73:FC:3C:60:14:D3:69:6D:1B:DA:34:F1:BF:5A:33:3C`
-- Will you add [X] feature?
-    - Please open a new feature request under 'Issues' tab and if the feature will be considered useful and possible can be added.
-- Can you remove permission [X]?
-    - Several permissions (e.g. Internet connectivity, location) are for showing a map preview of your current photo location data. If you do not need this feature, you can download a `nomaps` release from the [Releases page](https://github.com/IacobIonut01/Gallery/releases).
+  A clean, modern gallery experience for Android, built with Jetpack Compose.
+
+  <br />
+
+  [![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white)](https://www.android.com/)
+  [![Kotlin](https://img.shields.io/badge/Made%20with-Kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+  [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)](https://developer.android.com/compose)
+  [![License](https://img.shields.io/github/license/ifny75/Gallery?style=flat-square&color=555555)](./LICENSE)
+
+  <br />
+
+  [**Explore screenshots**](#screenshots) · [**Get the source**](#get-started) · [**Credits**](#credits)
+</div>
+
+---
+
+## A gallery that feels right
+
+Your photos and videos deserve an interface that stays out of the way. **Gallery** brings a thoughtful, modern design to everyday media browsing, with a focus on simplicity, clarity, and a comfortable Android experience.
+
+This repository is a fork of **[GrapheneOS Gallery](https://github.com/GrapheneOS/Gallery)**, which is itself based on **[ReFra](https://github.com/IacobIonut01/Gallery)**. It builds on the work of the original developers and the open-source community.
+
+<div align="center">
+  <img src="./screenshots/Phone_preview.png" alt="Gallery app — phone preview" width="320" />
+</div>
+
+## Highlights
+
+- **Clean by design** — a modern interface that puts your media first.
+- **Built with Jetpack Compose** — a native Android UI developed with Kotlin.
+- **Made for everyday browsing** — a straightforward place to explore your photos and videos.
+- **Open source** — transparent code, community contributions, and a foundation you can build on.
+
+## Screenshots
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="25%"><img src="./screenshots/preview1.png" alt="Gallery screenshot 1" width="200" /></td>
+      <td align="center" width="25%"><img src="./screenshots/preview2.png" alt="Gallery screenshot 2" width="200" /></td>
+      <td align="center" width="25%"><img src="./screenshots/preview3.png" alt="Gallery screenshot 3" width="200" /></td>
+      <td align="center" width="25%"><img src="./screenshots/preview4.png" alt="Gallery screenshot 4" width="200" /></td>
+    </tr>
+  </table>
+  <sub>Four views of the Gallery experience.</sub>
+</div>
+
+## Get started
+
+Browse the source code, follow development, or clone this repository:
+
+```bash
+git clone https://github.com/ifny75/Gallery.git
+```
+
+You can also check the [Releases page](https://github.com/ifny75/Gallery/releases) for published builds, if available.
+
+## Project lineage
+
+```text
+ReFra (original project)
+    └── GrapheneOS Gallery (fork)
+          └── ifny75/Gallery (this fork)
+```
+
+## Credits
+
+This project stands on the work of the developers and contributors who came before it.
+
+- **[ReFra](https://github.com/IacobIonut01/Gallery)** — the original Android gallery project.
+- **[GrapheneOS Gallery](https://github.com/GrapheneOS/Gallery)** — the upstream fork on which this repository is based.
+- **[Contributors](https://github.com/ifny75/Gallery/graphs/contributors)** — everyone helping improve the codebase.
+
+This repository is an independent fork. It is not presented as an official release of GrapheneOS or ReFra.
+
+## License
+
+Distributed under the [Apache License 2.0](./LICENSE). See the repository license for details.
+
+---
+
+<div align="center">
+  <sub>Made with care for a better gallery experience.</sub>
+  <br />
+  <sub>If you like this project, consider giving the repository a ⭐.</sub>
+</div>
