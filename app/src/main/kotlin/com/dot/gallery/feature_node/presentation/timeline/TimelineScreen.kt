@@ -12,6 +12,8 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import com.dot.gallery.core.updates.GalleryUpdateNotice
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -171,8 +173,11 @@ fun TimelineScreen(
         Scaffold(
             modifier = Modifier.nestedScroll(headerBehavior.nestedScrollConnection),
             topBar = {
-                MainSearchBar(isScrolling, sharedTransitionScope, animatedContentScope,
-                    scrollBehavior = headerBehavior, menuItems = { TimelineNavActions() })
+                Column {
+                    MainSearchBar(isScrolling, sharedTransitionScope, animatedContentScope,
+                        scrollBehavior = headerBehavior, menuItems = { TimelineNavActions() })
+                    GalleryUpdateNotice()
+                }
             }
         ) { it ->
             PullToRefreshBox(
@@ -223,7 +228,7 @@ fun TimelineScreen(
                         state = mosaicGridState,
                     ) {
                         MosaicMediaGrid(
-                            modifier = Modifier,
+                            modifier = Modifier.hazeSource(LocalHazeState.current),
                             gridState = mosaicGridState,
                             columns = currentColumns,
                             mediaState = mediaState,
@@ -247,7 +252,7 @@ fun TimelineScreen(
             } else {
                 GridPinchZoomLayout(
                     state = pinchState,
-                    modifier = Modifier,
+                    modifier = Modifier.hazeSource(LocalHazeState.current),
                     indicatorTopPadding = it.calculateTopPadding() + 16.dp,
                 ) {
                     MediaGridView(

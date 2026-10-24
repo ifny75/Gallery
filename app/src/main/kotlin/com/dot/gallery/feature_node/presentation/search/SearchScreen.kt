@@ -349,6 +349,7 @@ fun SearchScreen(
                     exit = exitAnimation
                 ) {
                     LazyColumn(
+                        modifier = Modifier.hazeSource(LocalHazeState.current),
                         verticalArrangement = Arrangement.spacedBy(1.dp)
                     ) {
                         if (searchIndexerState.isIndexing)

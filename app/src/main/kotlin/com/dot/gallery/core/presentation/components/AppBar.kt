@@ -257,12 +257,12 @@ fun GalleryNavBar(
     backStackEntry: NavBackStackEntry?,
     navigationItems: List<NavigationItem>,
     onClick: (route: String) -> Unit,
+    selectedRoute: String? = backStackEntry?.destination?.route,
 ) {
     Row(
         modifier = modifier
             .padding(horizontal = 12.dp, vertical = 8.dp)
-            .clip(RoundedCornerShape(28.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .galleryGlass(RoundedCornerShape(28.dp))
             .padding(6.dp)
             .height(72.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -270,7 +270,7 @@ fun GalleryNavBar(
         navigationItems.forEach { item ->
             GalleryNavBarItem(
                 navItem = item,
-                isSelected = item.route == backStackEntry?.destination?.route,
+                isSelected = item.route == selectedRoute,
                 onClick = onClick,
             )
         }

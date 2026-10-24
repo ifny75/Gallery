@@ -1050,8 +1050,24 @@
     <string name="gallery_authors_intro">This project stands on the work of the developers and contributors who came before it.</string>
     <string name="gallery_credit_refra">ReFra — the original Android gallery project.</string>
     <string name="gallery_credit_graphene">GrapheneOS Gallery — the upstream fork on which this repository is based.</string>
-    <string name="gallery_credit_contributors">Contributors — everyone helping improve the codebase.</string>
+    <string name="gallery_credit_contributors">ifny75 — Gallery design, development and maintenance.</string>
     <string name="gallery_metadata_warning_title">Remove photo metadata?</string>
     <string name="gallery_metadata_warning">A new PNG copy will be saved without EXIF, GPS, camera information, dates, comments or XMP. The original photo will keep its metadata. The copy is a static SDR image; animation and HDR data are not preserved.</string>
     <string name="gallery_metadata_confirm">Save clean copy</string>
+    <string name="gallery_batch_metadata">Metadata</string>
+    <string name="gallery_batch_metadata_description">Save selected photos without metadata</string>
+    <string name="gallery_batch_metadata_result">Saved %1$d of %2$d photos without metadata</string>
+    <string name="gallery_batch_metadata_warning">Save %1$d selected photos as new PNG copies without EXIF, GPS or XMP in Pictures/Private? Originals stay unchanged. Copies are static SDR images and may use more storage.</string>
+    <string name="gallery_appearance_colors">Accent color</string>
+    <string name="gallery_appearance_system">System</string>
+    <string name="gallery_appearance_neutral">Neutral</string>
+    <string name="gallery_appearance_effects">Visual effects</string>
+    <string name="gallery_appearance_blur">Glass panels over your photos</string>
+    <string name="gallery_update_check">Check for updates</string>
+    <string name="gallery_update_available">Gallery %1$s is available</string>
+    <string name="gallery_update_download">Download APK</string>
+    <string name="gallery_update_warning">Download this update from the Gallery GitHub release? Your browser downloads the APK, then Android asks you to install it. Your photos stay unchanged.</string>
+    <string name="gallery_update_none">No compatible update available</string>
+    <string name="gallery_update_error">Could not check for updates. Try again later.</string>
+    <string name="gallery_update_later">Later</string>
 </resources>

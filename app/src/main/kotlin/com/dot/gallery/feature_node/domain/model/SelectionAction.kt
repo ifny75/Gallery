@@ -15,6 +15,7 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.EnhancedEncryption
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.PrivacyTip
 import androidx.compose.material.icons.automirrored.outlined.RotateRight
 import androidx.compose.material.icons.outlined.SelectAll
 import androidx.compose.material.icons.outlined.Share
@@ -72,6 +73,11 @@ enum class SelectionAction(
     ),
 
     // ── Bottom bar actions ──
+    REMOVE_METADATA(
+        labelRes = R.string.gallery_batch_metadata,
+        descriptionRes = R.string.gallery_batch_metadata_description,
+        zone = ActionZone.BOTTOM,
+    ),
     SHARE(
         labelRes = R.string.share,
         descriptionRes = R.string.action_desc_share,
@@ -117,6 +123,7 @@ enum class SelectionAction(
 
     val icon: ImageVector
         get() = when (this) {
+            REMOVE_METADATA -> Icons.Outlined.PrivacyTip
             CLOSE -> Icons.Outlined.Close
             SELECT_ALL -> Icons.Outlined.SelectAll
             INFO -> Icons.Outlined.Info
@@ -161,6 +168,7 @@ data class SelectionSheetConfig(
         )
         val DEFAULT_MIDDLE_ACTIONS = emptyList<SelectionAction>()
         val DEFAULT_BOTTOM_ACTIONS = listOf(
+            SelectionAction.REMOVE_METADATA,
             SelectionAction.SHARE,
             SelectionAction.FAVORITE,
             SelectionAction.COPY,

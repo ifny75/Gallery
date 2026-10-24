@@ -43,6 +43,11 @@ import androidx.compose.material.icons.outlined.Deselect
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.SelectAll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.CircularProgressIndicator
+import com.dot.gallery.core.BatchMetadataViewModel
+import com.dot.gallery.feature_node.domain.util.isImage
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -140,6 +145,17 @@ fun <T : Media> BoxScope.SelectionSheet(
     val handler = LocalMediaHandler.current
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val metadataExporter = hiltViewModel<BatchMetadataViewModel>()
+    val exportState by metadataExporter.state.collectAsStateWithLifecycle()
+    var showMetadataWarning by remember { mutableStateOf(false) }
+    val imageSelection = selectedMedia.filter { it.isImage }
+    LaunchedEffect(exportState.finished) {
+        if (exportState.finished) {
+            Toast.makeText(context, context.getString(R.string.gallery_batch_metadata_result,
+                exportState.saved, exportState.total), Toast.LENGTH_LONG).show()
+            metadataExporter.acknowledge()
+        }
+    }
     var shouldMoveToTrash by rememberSaveable { mutableStateOf(true) }
     val trashSheetState = rememberAppBottomSheetState()
     val moveSheetState = rememberAppBottomSheetState()
@@ -179,7 +195,10 @@ fun <T : Media> BoxScope.SelectionSheet(
     }
     val config by rememberSelectionSheetConfig()
     val sanitizedConfig = remember(config, isInVault) {
-        val base = config.sanitized()
+        val sanitized = config.sanitized()
+        val base = if (!isInVault && SelectionAction.REMOVE_METADATA !in sanitized.bottomActions)
+            sanitized.copy(bottomActions = listOf(SelectionAction.REMOVE_METADATA) + sanitized.bottomActions)
+        else sanitized
         if (isInVault && SelectionAction.ADD_TO_VAULT !in base.bottomActions) {
             base.copy(bottomActions = base.bottomActions + SelectionAction.ADD_TO_VAULT)
         } else base
@@ -193,27 +212,16 @@ fun <T : Media> BoxScope.SelectionSheet(
         enter = slideInVertically { it * 2 },
         exit = slideOutVertically { it * 2 }
     ) {
-        val allowBlur by rememberAllowBlur()
-        val surfaceColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
-        val backgroundModifier = remember(allowBlur) {
-            if (!allowBlur) {
-                Modifier.background(
-                    color = surfaceColor,
-                    shape = Shapes.extraLarge
-                )
-            } else {
-                Modifier
-            }
-        }
+        val surfaceColor = MaterialTheme.colorScheme.surfaceContainer
         val shape = Shapes.extraLarge
         Column(
             modifier = Modifier
-                .padding(horizontal = 32.dp)
+                .padding(horizontal = 12.dp)
                 .navigationBarsPadding()
                 .then(sizeModifier)
                 .wrapContentHeight()
-                .clip(shape)
-                .padding(vertical = 16.dp)
+                .galleryGlass(shape)
+                .padding(horizontal = 12.dp, vertical = 12.dp)
                 .align(Alignment.BottomEnd),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -331,7 +339,8 @@ fun <T : Media> BoxScope.SelectionSheet(
             }
             // Middle actions — full-width pill buttons
             sanitizedConfig.middleActions.forEach { action ->
-                val isVisible = isActionVisible(action, collectionId, showFavoriteButton, isInVault)
+                val isVisible = isActionVisible(action, collectionId, showFavoriteButton, isInVault) &&
+                        (action != SelectionAction.REMOVE_METADATA || imageSelection.isNotEmpty())
                 if (isVisible) {
                     when (action) {
                         SelectionAction.COLLECTION -> {
@@ -371,26 +380,21 @@ fun <T : Media> BoxScope.SelectionSheet(
             Row(
                 modifier = Modifier
                     .then(sizeModifier)
-                    .then(backgroundModifier)
-                    .clip(shape)
-                    .shadow(
-                        elevation = 4.dp,
-                        shape = shape
-                    )
-                    .hazeEffect(
-                        state = LocalHazeState.current,
-                        style = HazeMaterials.regular(
-                            containerColor = surfaceColor
-                        )
-                    )
                     .horizontalScroll(rememberScrollState()),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 sanitizedConfig.bottomActions.forEach { action ->
-                    val isVisible = isActionVisible(action, collectionId, showFavoriteButton, isInVault)
+                    val isVisible = isActionVisible(action, collectionId, showFavoriteButton, isInVault) &&
+                        (action != SelectionAction.REMOVE_METADATA || imageSelection.isNotEmpty())
                     if (isVisible) {
                         when (action) {
+                            SelectionAction.REMOVE_METADATA -> {
+                                SelectionBarColumn(imageVector = action.icon, tabletMode = tabletMode,
+                                    title = stringResource(R.string.gallery_batch_metadata)) {
+                                    if (!exportState.running) showMetadataWarning = true
+                                }
+                            }
                             SelectionAction.SHARE -> {
                                 SelectionBarColumn(
                                     imageVector = action.icon,
@@ -534,6 +538,35 @@ fun <T : Media> BoxScope.SelectionSheet(
         }
     }
 
+    if (showMetadataWarning) {
+        AlertDialog(
+            onDismissRequest = { showMetadataWarning = false },
+            title = { Text(stringResource(R.string.gallery_metadata_warning_title)) },
+            text = { Text(stringResource(R.string.gallery_batch_metadata_warning, imageSelection.size)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showMetadataWarning = false
+                    metadataExporter.export(imageSelection.map { it.getUri() })
+                }) { Text(stringResource(R.string.gallery_metadata_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showMetadataWarning = false }) { Text(stringResource(R.string.action_cancel)) }
+            }
+        )
+    }
+    if (exportState.running) {
+        AlertDialog(
+            onDismissRequest = {},
+            title = { Text(stringResource(R.string.gallery_batch_metadata)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    CircularProgressIndicator()
+                    Text("${exportState.processed} / ${exportState.total}")
+                }
+            },
+            confirmButton = {}
+        )
+    }
     SelectVaultSheet(
         state = vaultSheetState,
         vaultState = vaults.value,
@@ -811,31 +844,14 @@ fun SelectionAddon(
     containerColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
     text: String? = null,
 ) {
-    val allowBlur by rememberAllowBlur()
-    val backgroundModifier = remember(allowBlur) {
-        if (!allowBlur) {
-            Modifier.background(
-                color = containerColor,
-                shape = Shapes.extraLarge
-            )
-        } else {
-            Modifier
-        }
-    }
     val shape = Shapes.extraLarge
     Row(
         modifier = modifier
-            .then(backgroundModifier)
+            .background(containerColor.copy(alpha = 0.35f), shape)
             .clip(shape)
             .shadow(
                 elevation = 4.dp,
                 shape = shape
-            )
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = HazeMaterials.thin(
-                    containerColor = containerColor
-                )
             )
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -888,12 +904,6 @@ private fun MiddleActionButton(
                 elevation = 4.dp,
                 shape = shape
             )
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = HazeMaterials.regular(
-                    containerColor = surfaceColor
-                )
-            )
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -929,15 +939,7 @@ private fun RowScope.SelectionBarColumn(
         if (showTitles) Modifier.defaultMinSize(minHeight = 80.dp)
         else Modifier.defaultMinSize(minHeight = 64.dp)
     }
-    val minWidthSizeModifier = remember(tabletMode) {
-        if (showTitles) {
-            if (tabletMode) Modifier.defaultMinSize(minWidth = 80.dp)
-            else Modifier.weight(1f)
-        } else {
-            if (tabletMode) Modifier.defaultMinSize(minWidth = 64.dp)
-            else Modifier.weight(1f)
-        }
-    }
+    val minWidthSizeModifier = Modifier.defaultMinSize(minWidth = if (showTitles) 88.dp else 64.dp)
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))
@@ -947,7 +949,7 @@ private fun RowScope.SelectionBarColumn(
                 onClick = onItemClick,
                 onLongClick = onItemLongClick
             )
-            .padding(top = 12.dp, bottom = 16.dp),
+            .padding(horizontal = 8.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -964,7 +966,10 @@ private fun RowScope.SelectionBarColumn(
                 text = title,
                 modifier = Modifier,
                 fontWeight = FontWeight.Medium,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.labelMedium,
+                maxLines = 1,
+                softWrap = false,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 color = tintColor,
                 textAlign = TextAlign.Center
             )

@@ -395,4 +395,20 @@
     <string name="gallery_metadata_warning_title">Удалить метаданные фото?</string>
     <string name="gallery_metadata_warning">Будет сохранена новая PNG-копия без EXIF, GPS, данных камеры, дат, комментариев и XMP. Исходное фото сохранит свои метаданные. Копия — статичное SDR-изображение: анимация и HDR не сохраняются.</string>
     <string name="gallery_metadata_confirm">Сохранить чистую копию</string>
+    <string name="gallery_batch_metadata">Метаданные</string>
+    <string name="gallery_batch_metadata_description">Сохранить выбранные фото без метаданных</string>
+    <string name="gallery_batch_metadata_result">Сохранено фото без метаданных: %1$d из %2$d</string>
+    <string name="gallery_batch_metadata_warning">Сохранить выбранные фото (%1$d) как новые PNG без EXIF, GPS и XMP в Pictures/Private? Оригиналы сохранятся. Копии будут статичными SDR-изображениями и могут занимать больше места.</string>
+    <string name="gallery_appearance_colors">Цвет акцента</string>
+    <string name="gallery_appearance_system">Системный</string>
+    <string name="gallery_appearance_neutral">Нейтральный</string>
+    <string name="gallery_appearance_effects">Визуальные эффекты</string>
+    <string name="gallery_appearance_blur">Стеклянные панели поверх фотографий</string>
+    <string name="gallery_update_check">Проверить обновления</string>
+    <string name="gallery_update_available">Доступна Gallery %1$s</string>
+    <string name="gallery_update_download">Скачать APK</string>
+    <string name="gallery_update_warning">Скачать обновление из релиза Gallery на GitHub? Браузер загрузит APK, после чего Android запросит установку. Фотографии сохранятся.</string>
+    <string name="gallery_update_none">Совместимых обновлений пока нет</string>
+    <string name="gallery_update_error">Не удалось проверить обновления. Попробуйте позже.</string>
+    <string name="gallery_update_later">Позже</string>
 </resources>

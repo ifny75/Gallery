@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.Velocity
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -22,8 +26,28 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun rememberGalleryScrollBehavior(): TopAppBarScrollBehavior =
-    TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+fun rememberGalleryScrollBehavior(): TopAppBarScrollBehavior {
+    val delegate = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    return remember(delegate) {
+        object : TopAppBarScrollBehavior by delegate {
+            override val nestedScrollConnection = object : NestedScrollConnection {
+                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                    delegate.state.heightOffset += available.y
+                    // Observe the gesture; never spend the photo grid's scroll on the title.
+                    return Offset.Zero
+                }
+                override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
+                    delegate.state.contentOffset += consumed.y
+                    return Offset.Zero
+                }
+                override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+                    delegate.nestedScrollConnection.onPostFling(consumed, available)
+                    return Velocity.Zero
+                }
+            }
+        }
+    }
+}
 
 /** One title moves and scales into a persistent toolbar; no duplicated/teleporting text. */
 @OptIn(ExperimentalMaterial3Api::class)

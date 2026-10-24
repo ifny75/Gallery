@@ -147,7 +147,10 @@ fun SettingsScreen() {
     BaseSettingsScreen(
         title = stringResource(R.string.settings_title),
         topContent = {
-            SettingsAppHeader()
+            androidx.compose.foundation.layout.Column {
+                SettingsAppHeader()
+                com.dot.gallery.core.updates.GalleryUpdateNotice(manual = true)
+            }
         },
         settingsList = rememberDashboardSettings(),
         settingsBuilder = { setting, index ->

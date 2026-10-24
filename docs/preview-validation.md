@@ -104,3 +104,45 @@ on-device sample, not a guarantee of zero jank for every situation.
 Collapsed-title rotation was checked in landscape and back in portrait. The title
 stays visible and retains the correct scale. Previous device rotation settings were restored.
 Final seven-case results: `C:\Graphene\build-output\gallery-complete-ui-tests.txt`.
+
+
+## Gallery 4.2.2 preview
+
+- Published the previous tested redesign first as `5e3190f` before starting these changes.
+- Header pre-scroll observes gestures without consuming the grid's movement. The new
+  short-gesture regression moved a photo 81 px while the title remained expanded;
+  previously that motion was spent entirely on the header.
+- One shared Haze source per content container feeds the floating navigation and
+  the entire selection panel. No per-thumbnail blur layers were added.
+- The selection panel has readable padding/backdrop, horizontal scrolling and a
+  Metadata action for selected images. Batch work runs sequentially on IO, releases
+  each Glide target/bitmap and reports saved/total, including partial failures.
+- Cancel was checked with a fresh dialog and created no file. Two selected 3000×4000
+  photos produced two PNG copies. Generated copies contained no EXIF/XMP/text chunks.
+  Only new test copies were deleted; the pre-existing export was retained.
+- Appearance was rebuilt around the current Gallery grid and four-tab glass navigation,
+  with system/neutral/custom accents, theme and visual-effects controls.
+- Authors now credits ifny75 and links to that profile. The upstream acknowledgements remain.
+- Release discovery, a Photos banner, download confirmation and a manual settings
+  check were added. Compatibility/malformed input/URL/downgrade policy has five new
+  JVM tests. See `updates.md` for publishing the release manifest and update limits.
+- Eleven JVM tests passed. Five device tests passed, including the real sequential
+  MediaStore export of rotated, GPS-tagged fixtures with source-byte preservation,
+  and rejection of an unreadable input. Test fixtures/exports and instrumentation APK
+  were removed after testing.
+- Seven toolbar/search navigation cases passed on the 4.2.2 optimized build. Appearance,
+  Authors and selection-panel layout were inspected on the final APK.
+- Final APK signature verified, package `com.dot.gallery.debug`, actual version code
+  `421024`, version `4.2.2-preview`; installed over the existing test app without clearing data.
+- Final Pixel 10 scroll sample with blur: 486 rendered frames, 1 janky frame (0.21%),
+  p50 9 ms, p90 11 ms, p95 12 ms, p99 14 ms. This is a bounded device/library sample,
+  not a guarantee for every device or collection.
+
+Final reports: `C:\Graphene\build-output\gallery-422-final-gfx.txt`,
+`gallery-422-final-short-scroll.txt`, `gallery-422-device-tests.txt`,
+`gallery-422-toolbar-results.txt`. Re-run the short-gesture regression in English,
+portrait orientation at the Pixel test resolution:
+
+```powershell
+.\tools\Test-GallerySimultaneousScroll.ps1
+```

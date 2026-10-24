@@ -24,7 +24,7 @@ fun AuthorsScreen() {
                 listOf(
                     R.string.gallery_credit_refra to "https://github.com/IacobIonut01/Gallery",
                     R.string.gallery_credit_graphene to "https://github.com/GrapheneOS/Gallery",
-                    R.string.gallery_credit_contributors to "https://github.com/ifny75/Gallery/graphs/contributors"
+                    R.string.gallery_credit_contributors to "https://github.com/ifny75"
                 ).forEach { (text, url) ->
                     OutlinedCard(onClick = { uriHandler.openUri(url) }, modifier = Modifier.fillMaxWidth()) {
                         Text(stringResource(text), modifier = Modifier.padding(20.dp),
