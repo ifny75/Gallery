@@ -196,9 +196,10 @@ fun <T : Media> BoxScope.SelectionSheet(
     val config by rememberSelectionSheetConfig()
     val sanitizedConfig = remember(config, isInVault) {
         val sanitized = config.sanitized()
-        val base = if (!isInVault && SelectionAction.REMOVE_METADATA !in sanitized.bottomActions)
-            sanitized.copy(bottomActions = listOf(SelectionAction.REMOVE_METADATA) + sanitized.bottomActions)
-        else sanitized
+        // Keep delete and privacy actions visible before the horizontally scrolled extras.
+        val required = if (isInVault) listOf(SelectionAction.TRASH)
+            else listOf(SelectionAction.TRASH, SelectionAction.REMOVE_METADATA)
+        val base = sanitized.copy(bottomActions = required + sanitized.bottomActions.filterNot { it in required })
         if (isInVault && SelectionAction.ADD_TO_VAULT !in base.bottomActions) {
             base.copy(bottomActions = base.bottomActions + SelectionAction.ADD_TO_VAULT)
         } else base
