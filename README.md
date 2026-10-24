@@ -1,76 +1,61 @@
 <div align="center">
-  <img src="./screenshots/main_photo.png" alt="Gallery — clean, modern photo browsing" width="100%" />
 
-  <br />
+# Gallery
 
-  # Gallery
+**Your photos. A calmer Android experience.**
 
-  **Your memories. Beautifully organized.**
+A redesigned Android gallery by [ifny75](https://github.com/ifny75), part of [Valanium](https://valanium.com/apps).
+Built with Kotlin and Jetpack Compose, with system theme accents and a clean dark interface.
 
-  A clean, modern gallery experience for Android, built with Jetpack Compose.
+[![Android](https://img.shields.io/badge/Android-10%2B-3DDC84?style=flat-square&logo=android&logoColor=white)](https://www.android.com/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)](https://developer.android.com/compose)
+[![License](https://img.shields.io/github/license/ifny75/Gallery?style=flat-square)](./LICENSE)
 
-  <br />
+[**Download APK**](https://github.com/ifny75/Gallery/releases) · [**Valanium apps**](https://valanium.com/apps) · [**Changes**](https://github.com/ifny75/Gallery/commits/main/) · [**Credits**](#credits)
 
-  [![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white)](https://www.android.com/)
-  [![Kotlin](https://img.shields.io/badge/Made%20with-Kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
-  [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)](https://developer.android.com/compose)
-  [![License](https://img.shields.io/github/license/ifny75/Gallery?style=flat-square&color=555555)](./LICENSE)
-
-  <br />
-
-  [**Explore screenshots**](#screenshots) · [**Get the source**](#get-started) · [**Credits**](#credits)
 </div>
 
----
+## A look inside
 
-## A gallery that feels right
+<table>
+  <tr>
+    <th width="33%">Photos</th>
+    <th width="33%">Settings</th>
+    <th width="33%">Metadata removal</th>
+  </tr>
+  <tr>
+    <td><img src="./screenshots/gallery-photos.png" alt="Gallery photo timeline with rounded thumbnails and glass navigation" width="100%" /></td>
+    <td><img src="./screenshots/gallery-settings.png" alt="Gallery settings with Appearance, updates and author credits" width="100%" /></td>
+    <td><img src="./screenshots/gallery-metadata-removal.png" alt="Photo editor warning before saving a copy without metadata" width="100%" /></td>
+  </tr>
+</table>
 
-Your photos and videos deserve an interface that stays out of the way. **Gallery** brings a thoughtful, modern design to everyday media browsing, with a focus on simplicity, clarity, and a comfortable Android experience.
+## What makes this fork different
 
-This repository is a fork of **[GrapheneOS Gallery](https://github.com/GrapheneOS/Gallery)**, which is itself based on **[ReFra](https://github.com/IacobIonut01/Gallery)**. It builds on the work of the original developers and the open-source community.
+- **A new interface.** Photos, Albums, Search and Bin share rounded media previews, system theme accents and blurred navigation panels.
+- **Smoother browsing.** Photos scroll while the large title moves into the top bar. Search navigation and date-heading animations have been improved.
+- **Metadata-free copies.** Save individual or selected photos without EXIF, GPS or XMP, with a warning before export. Originals remain unchanged; exports are new static SDR PNG copies.
+- **Updated Appearance.** Preview the current Gallery layout and choose system, neutral or custom accent colors, dark mode and visual effects.
+- **Updates from this repository.** Gallery checks compatible [ifny75/Gallery releases](https://github.com/ifny75/Gallery/releases), offers an update banner and asks before opening the APK download. Android handles installation confirmation.
+- **A simpler first launch.** Onboarding asks for access to photos and videos. The in-app What’s new describes changes from this fork.
 
-<div align="center">
-  <img src="./screenshots/Phone_preview.png" alt="Gallery app — phone preview" width="320" />
-</div>
+## Download
 
-## Highlights
+Get the APK from [GitHub Releases](https://github.com/ifny75/Gallery/releases) or the [Valanium applications page](https://valanium.com/apps).
 
-- **Clean by design** — a modern interface that puts your media first.
-- **Built with Jetpack Compose** — a native Android UI developed with Kotlin.
-- **Made for everyday browsing** — a straightforward place to explore your photos and videos.
-- **Open source** — transparent code, community contributions, and a foundation you can build on.
+The current preview targets **Android 10+ on arm64** and installs as `com.dot.gallery.debug`, alongside the system gallery. Preview screenshots may show an earlier version than the latest release.
 
-## Screenshots
-
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="25%"><img src="./screenshots/preview1.png" alt="Gallery screenshot 1" width="200" /></td>
-      <td align="center" width="25%"><img src="./screenshots/preview2.png" alt="Gallery screenshot 2" width="200" /></td>
-      <td align="center" width="25%"><img src="./screenshots/preview3.png" alt="Gallery screenshot 3" width="200" /></td>
-      <td align="center" width="25%"><img src="./screenshots/preview4.png" alt="Gallery screenshot 4" width="200" /></td>
-    </tr>
-  </table>
-  <sub>Four views of the Gallery experience.</sub>
-</div>
-
-## Get started
-
-Browse the source code, follow development, or clone this repository:
+## Source and development
 
 ```bash
 git clone https://github.com/ifny75/Gallery.git
+cd Gallery
+./gradlew :app:assembleArm64-v8aNoMLPreview
 ```
 
-You can also check the [Releases page](https://github.com/ifny75/Gallery/releases) for published builds, if available.
-
-## Project lineage
-
-```text
-ReFra (original project)
-    └── GrapheneOS Gallery (fork)
-          └── ifny75/Gallery (this fork)
-```
+Building requires JDK 21 and an Android SDK configured for the project. The preview is an optimized test build.
+See [update publishing](./docs/updates.md) and [validation notes](./docs/preview-validation.md) for release and testing details.
 
 ## Credits
 
@@ -78,18 +63,10 @@ This project stands on the work of the developers and contributors who came befo
 
 - **[ReFra](https://github.com/IacobIonut01/Gallery)** — the original Android gallery project.
 - **[GrapheneOS Gallery](https://github.com/GrapheneOS/Gallery)** — the upstream fork on which this repository is based.
-- **[Contributors](https://github.com/ifny75/Gallery/graphs/contributors)** — everyone helping improve the codebase.
+- **[ifny75](https://github.com/ifny75)** — Gallery design, development and maintenance.
 
-This repository is an independent fork. It is not presented as an official release of GrapheneOS or ReFra.
+This is an independent fork built on those projects and their contributors’ work.
 
 ## License
 
-Distributed under the [Apache License 2.0](./LICENSE). See the repository license for details.
-
----
-
-<div align="center">
-  <sub>Made with care for a better gallery experience.</sub>
-  <br />
-  <sub>If you like this project, consider giving the repository a ⭐.</sub>
-</div>
+Distributed under the [Apache License 2.0](./LICENSE).
