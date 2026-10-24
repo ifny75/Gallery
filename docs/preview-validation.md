@@ -146,3 +146,17 @@ portrait orientation at the Pixel test resolution:
 ```powershell
 .\tools\Test-GallerySimultaneousScroll.ps1
 ```
+
+
+## Gallery 4.2.3 preview
+
+Trash and Metadata are pinned to the beginning of the horizontal action list, so
+both are visible immediately after selection. The existing Trash confirmation was
+opened for two selected photos on Pixel 10 and cancelled; originals were not deleted.
+Eleven JVM tests passed, optimized APK signature verified, and version 421034 was
+installed over the previous preview without clearing data.
+
+A genuine GitHub update offer was verified from installed 4.2.2 to published 4.2.3,
+including the download confirmation and cached banner. The APK and release manifest
+are published in v4.2.3-preview. Gallery/Calculator are also hosted on valanium.com/apps;
+public APK downloads were read fully and checked against their SHA-256 values.
