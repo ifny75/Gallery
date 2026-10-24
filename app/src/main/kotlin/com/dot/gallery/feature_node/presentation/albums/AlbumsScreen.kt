@@ -34,6 +34,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.dot.gallery.core.presentation.components.rememberGalleryScrollBehavior
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -41,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dot.gallery.feature_node.presentation.common.components.GridPinchZoomLayout
 import com.dot.gallery.feature_node.presentation.common.components.rememberGridPinchZoomState
+import com.dot.gallery.ui.core.icons.Albums
 import com.dot.gallery.R
 import com.dot.gallery.core.Constants.Animation.enterAnimation
 import com.dot.gallery.core.Constants.Animation.exitAnimation
@@ -104,6 +107,7 @@ fun AlbumsScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
 ) {
+    val headerBehavior = rememberGalleryScrollBehavior()
     val distributor = LocalMediaDistributor.current
     val mergedSubfolderAlbums by distributor.mergedSubfolderAlbumsFlow.collectAsStateWithLifecycle()
     val mergedSubfolderIds = remember(mergedSubfolderAlbums) {
@@ -140,8 +144,12 @@ fun AlbumsScreen(
     }
 
     Scaffold(
+        modifier = Modifier.nestedScroll(headerBehavior.nestedScrollConnection),
         topBar = {
             MainSearchBar(
+                title = stringResource(R.string.nav_albums),
+                scrollBehavior = headerBehavior,
+                icon = com.dot.gallery.ui.core.Icons.Albums,
                 isScrolling = isScrolling,
                 sharedTransitionScope = sharedTransitionScope,
                 animatedContentScope = animatedContentScope,

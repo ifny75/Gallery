@@ -5,6 +5,9 @@
 
 package com.dot.gallery.feature_node.presentation.albums.components
 
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.material.icons.outlined.Folder
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.core.animateDpAsState
@@ -103,79 +106,47 @@ fun AlbumComponent(
 ) {
     val scope = rememberCoroutineScope()
     val appBottomSheetState = rememberAppBottomSheetState()
-    Column(
-        modifier = modifier
-            .alpha(if (isEnabled) 1f else 0.4f)
-            .padding(horizontal = 8.dp),
+    AlbumOptionSheet(
+        album = album, appBottomSheetState = appBottomSheetState,
+        onMoveAlbumToTrash = onMoveAlbumToTrash, onTogglePinClick = onTogglePinClick,
+        onToggleIgnoreClick = onToggleIgnoreClick, onToggleLockClick = onToggleLockClick,
+        onDeleteAlbumThumbnailClick = onDeleteAlbumThumbnailClick, onAddToGroup = onAddToGroup,
+        onRemoveFromGroup = onRemoveFromGroup, onToggleMergeSubfolders = onToggleMergeSubfolders,
+        isMergedSubfolder = isMergedSubfolder,
+    )
+    Box(
+        modifier = modifier.alpha(if (isEnabled) 1f else 0.4f)
+            .padding(4.dp).aspectRatio(1f).clip(RoundedCornerShape(18.dp)),
     ) {
-        AlbumOptionSheet(
-            album = album,
-            appBottomSheetState = appBottomSheetState,
-            onMoveAlbumToTrash = onMoveAlbumToTrash,
-            onTogglePinClick = onTogglePinClick,
-            onToggleIgnoreClick = onToggleIgnoreClick,
-            onToggleLockClick = onToggleLockClick,
-            onDeleteAlbumThumbnailClick = onDeleteAlbumThumbnailClick,
-            onAddToGroup = onAddToGroup,
-            onRemoveFromGroup = onRemoveFromGroup,
-            onToggleMergeSubfolders = onToggleMergeSubfolders,
-            isMergedSubfolder = isMergedSubfolder
+        AlbumImage(
+            modifier = thumbnailModifier, album = album, isEnabled = isEnabled,
+            onItemClick = onItemClick,
+            onItemLongClick = if (onTogglePinClick != null) {
+                { scope.launch { appBottomSheetState.show() } }
+            } else null,
         )
-        Box(
-            modifier = Modifier
-                .aspectRatio(1f)
-        ) {
-            AlbumImage(
-                modifier = thumbnailModifier,
-                album = album,
-                isEnabled = isEnabled,
-                onItemClick = onItemClick,
-                onItemLongClick = if (onTogglePinClick != null) {
-                    {
-                        scope.launch {
-                            appBottomSheetState.show()
-                        }
-                    }
-                } else null
-            )
-            if (album.isOnSdcard) {
-                Icon(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .size(24.dp)
-                        .align(Alignment.BottomEnd),
-                    imageVector = Icons.Outlined.SdCard,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
+        Box(Modifier.fillMaxSize().background(Brush.verticalGradient(
+            0f to Color.Black.copy(alpha = 0.12f),
+            0.4f to Color.Transparent,
+            1f to Color.Black.copy(alpha = 0.9f),
+        )))
+        Icon(
+            imageVector = Icons.Outlined.Folder, contentDescription = null, tint = Color.White,
+            modifier = Modifier.align(Alignment.TopStart).padding(12.dp).size(28.dp),
+        )
+        if (album.isOnSdcard) {
+            Icon(Icons.Outlined.SdCard, contentDescription = null, tint = Color.White,
+                modifier = Modifier.align(Alignment.TopEnd).padding(12.dp).size(24.dp))
+        }
+        Column(Modifier.align(Alignment.BottomStart).padding(12.dp)) {
+            Text(album.label, style = MaterialTheme.typography.titleLarge,
+                color = Color.White, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            if (album.count > 0) {
+                Text(pluralStringResource(R.plurals.item_count, album.count.toInt(), album.count),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Color.White.copy(alpha = 0.75f), maxLines = 1)
             }
         }
-        Text(
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .padding(horizontal = 16.dp),
-            text = album.label,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
-        if (album.count > 0) {
-            Text(
-                modifier = Modifier
-                    .padding(top = 2.dp, bottom = 16.dp)
-                    .padding(horizontal = 16.dp),
-                text = pluralStringResource(
-                    id = R.plurals.item_count,
-                    count = album.count.toInt(),
-                    album.count
-                ) + " (${formatSize(album.size)})",
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-                style = MaterialTheme.typography.labelMedium,
-            )
-        }
-
     }
 }
 
@@ -566,10 +537,7 @@ fun AlbumImage(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed = interactionSource.collectIsPressedAsState()
-    val cornerRadius by animateDpAsState(
-        targetValue = if (isPressed.value) 32.dp else 16.dp,
-        label = "cornerRadius"
-    )
+    val cornerRadius = 18.dp
     val feedbackManager = rememberFeedbackManager()
     if (album.isLocked) {
         Icon(
@@ -633,7 +601,7 @@ fun AlbumImage(
     } else {
         val renderer = LocalMediaImageRenderer.current
         renderer.RenderImage(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .border(
                     width = 1.dp,

@@ -30,6 +30,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.ImageSearch
@@ -48,6 +49,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.dot.gallery.core.presentation.components.rememberGalleryScrollBehavior
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlendMode
@@ -101,6 +104,7 @@ import kotlinx.coroutines.withContext
 import com.dot.gallery.ui.core.Icons as GalleryIcons
 
 @OptIn(
+    androidx.compose.material3.ExperimentalMaterial3Api::class,
     ExperimentalSharedTransitionApi::class, ExperimentalHazeMaterialsApi::class,
     ExperimentalGlideComposeApi::class
 )
@@ -111,6 +115,7 @@ fun LibraryScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
 ) {
+    val headerBehavior = rememberGalleryScrollBehavior()
     val eventHandler = LocalEventHandler.current
     val viewModel = hiltViewModel<LibraryViewModel>()
     var lastCellIndex by rememberAlbumGridSize()
@@ -150,9 +155,12 @@ fun LibraryScreen(
         modifier = Modifier.padding(
             start = paddingValues.calculateStartPadding(LocalLayoutDirection.current),
             end = paddingValues.calculateEndPadding(LocalLayoutDirection.current)
-        ),
+        ).nestedScroll(headerBehavior.nestedScrollConnection),
         topBar = {
             MainSearchBar(
+                title = stringResource(R.string.library),
+                scrollBehavior = headerBehavior,
+                icon = Icons.Outlined.PhotoLibrary,
                 isScrolling = isScrolling,
                 sharedTransitionScope = sharedTransitionScope,
                 animatedContentScope = animatedContentScope

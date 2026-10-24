@@ -15,6 +15,13 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.semantics.Role
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -78,10 +85,11 @@ import dev.chrisbanes.haze.hazeEffect
 
 @Composable
 fun rememberNavigationItems(): List<NavigationItem> {
-    val timelineTitle = stringResource(R.string.nav_timeline)
+    val timelineTitle = stringResource(R.string.gallery_photos)
     val albumsTitle = stringResource(R.string.nav_albums)
-    val libraryTitle = stringResource(R.string.library)
-    return remember {
+    val searchTitle = stringResource(R.string.search)
+    val binTitle = stringResource(R.string.gallery_bin)
+    return remember(timelineTitle, albumsTitle, searchTitle, binTitle) {
         mutableListOf(
             NavigationItem(
                 name = timelineTitle,
@@ -94,13 +102,22 @@ fun rememberNavigationItems(): List<NavigationItem> {
                 icon = com.dot.gallery.ui.core.Icons.Albums,
             ),
             NavigationItem(
-                name = libraryTitle,
-                route = Screen.LibraryScreen(),
-                icon = Icons.Outlined.PhotoLibrary
+                name = searchTitle,
+                route = Screen.SearchScreen(),
+                icon = Icons.Outlined.Search
+            ),
+            NavigationItem(
+                name = binTitle,
+                route = Screen.TrashedScreen(),
+                icon = Icons.Outlined.Delete
             )
         )
     }
 }
+
+/** Library stays reachable as a secondary browsing page after moving it to the menu. */
+internal fun isGalleryBrowseRoute(route: String?, items: List<NavigationItem>): Boolean =
+    items.any { it.route == route } || route == Screen.LibraryScreen()
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Stable
@@ -128,7 +145,7 @@ fun AppBarContainer(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             val anySelectedRoute = remember(backStackEntry) {
-                bottomNavItems.any { it.route == navController.currentDestination?.route }
+                isGalleryBrowseRoute(navController.currentDestination?.route, bottomNavItems)
             }
             val showNavRail by remember(useNavRail, bottomBarState, anySelectedRoute) {
                 derivedStateOf {
@@ -187,7 +204,7 @@ fun AppBarContainer(
             content()
             val hideNavBarSetting by rememberAutoHideNavBar()
             val anySelectedRoute = remember(backStackEntry) {
-                bottomNavItems.any { it.route == navController.currentDestination?.route }
+                isGalleryBrowseRoute(navController.currentDestination?.route, bottomNavItems)
             }
             val showNavbar by remember(bottomBarState, isScrolling, hideNavBarSetting, anySelectedRoute) {
                 derivedStateOf {
@@ -241,39 +258,20 @@ fun GalleryNavBar(
     navigationItems: List<NavigationItem>,
     onClick: (route: String) -> Unit,
 ) {
-    val allowBlur by rememberAllowBlur()
-    val surfaceColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
-    val backgroundModifier = remember (allowBlur) {
-        if (!allowBlur) {
-            Modifier.background(
-                color = surfaceColor,
-                shape = RoundedCornerShape(100)
-            )
-        } else {
-            Modifier
-        }
-    }
     Row(
-        modifier = Modifier
-            .padding(horizontal = 32.dp, vertical = 32.dp)
-            .then(modifier)
-            .height(64.dp)
-            .clip(RoundedCornerShape(100))
-            .then(backgroundModifier)
-            .hazeEffect(
-                state = LocalHazeState.current,
-                style = LocalHazeStyle.current
-            ),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = modifier
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .clip(RoundedCornerShape(28.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .padding(6.dp)
+            .height(72.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         navigationItems.forEach { item ->
-            val selected = remember(item, backStackEntry) {
-                item.route == backStackEntry?.destination?.route
-            }
             GalleryNavBarItem(
                 navItem = item,
-                isSelected = selected,
-                onClick = onClick
+                isSelected = item.route == backStackEntry?.destination?.route,
+                onClick = onClick,
             )
         }
     }
@@ -364,44 +362,27 @@ fun RowScope.GalleryNavBarItem(
     isSelected: Boolean,
     onClick: (route: String) -> Unit,
 ) {
-    val mutableInteraction = remember { MutableInteractionSource() }
-    val selectedColor by animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
-        label = "selectedColor"
+    val background by animateColorAsState(
+        if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
+        label = "navigationBackground",
     )
-    val selectedIconColor by animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
-        label = "selectedIconColor"
+    val foreground by animateColorAsState(
+        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
+        else MaterialTheme.colorScheme.onSurfaceVariant,
+        label = "navigationForeground",
     )
-    Box(
-        modifier = Modifier
-            .height(64.dp)
-            .weight(1f)
-            // Dummy clickable to intercept clicks from passing under the container
-            .clickable(
-                indication = null,
-                interactionSource = mutableInteraction,
-                onClick = {}
-            ),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier.weight(1f).height(72.dp)
+            .clip(RoundedCornerShape(22.dp))
+            .background(background)
+            .selectable(selected = isSelected, role = Role.Tab) {
+                if (!isSelected) onClick(navItem.route)
+            }.padding(horizontal = 4.dp, vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
     ) {
-        Box(
-            modifier = Modifier
-                .height(32.dp)
-                .width(64.dp)
-                .background(
-                    color = selectedColor,
-                    shape = RoundedCornerShape(percent = 100)
-                )
-                .clip(RoundedCornerShape(100))
-                .clickable { if (!isSelected) onClick(navItem.route) },
-        )
-        Icon(
-            modifier = Modifier
-                .size(22.dp),
-            imageVector = navItem.icon,
-            contentDescription = navItem.name,
-            tint = selectedIconColor
-        )
+        Icon(navItem.icon, contentDescription = null, tint = foreground, modifier = Modifier.size(28.dp))
+        Text(navItem.name, color = foreground, style = MaterialTheme.typography.labelLarge,
+            maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }

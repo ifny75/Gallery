@@ -42,6 +42,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.dot.gallery.core.presentation.components.rememberGalleryScrollBehavior
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -106,6 +108,7 @@ fun TimelineScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
 ) {
+    val headerBehavior = rememberGalleryScrollBehavior()
     var canScroll by rememberSaveable { mutableStateOf(true) }
     var lastCellIndex by rememberGridSize()
     val timelineLayoutType by rememberTimelineLayoutType()
@@ -138,7 +141,7 @@ fun TimelineScreen(
     val selectionState = selector.isSelectionActive.collectAsStateWithLifecycle()
     val selectedMedia = selector.selectedMedia.collectAsStateWithLifecycle()
 
-    val dpCacheWindow = LazyLayoutCacheWindow(aheadFraction = 2f, behindFraction = 2f)
+    val dpCacheWindow = remember { LazyLayoutCacheWindow(aheadFraction = 0.5f, behindFraction = 0.25f) }
     val pinchState = rememberGridPinchZoomState(
         cellsList = cellsList,
         initialCellsIndex = lastCellIndex,
@@ -166,13 +169,10 @@ fun TimelineScreen(
             )
     ) {
         Scaffold(
+            modifier = Modifier.nestedScroll(headerBehavior.nestedScrollConnection),
             topBar = {
-                MainSearchBar(
-                    isScrolling = isScrolling,
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedContentScope = animatedContentScope,
-                    menuItems = { TimelineNavActions() },
-                )
+                MainSearchBar(isScrolling, sharedTransitionScope, animatedContentScope,
+                    scrollBehavior = headerBehavior, menuItems = { TimelineNavActions() })
             }
         ) { it ->
             PullToRefreshBox(
@@ -209,71 +209,6 @@ fun TimelineScreen(
                         bottom = paddingValues.calculateBottomPadding() + 128.dp
                     )
                 }
-                val stickyHeaderItem by rememberStickyHeaderItem(
-                    gridState = mosaicGridState,
-                    mediaState = mediaState
-                )
-
-                val hideSearchBarSetting by rememberAutoHideSearchBar()
-                val searchBarPaddingTop = remember(paddingValues) {
-                    paddingValues.calculateTopPadding()
-                }
-                val searchBarPadding by animateDpAsState(
-                    targetValue = remember(
-                        isScrolling.value,
-                        searchBarPaddingTop,
-                        hideSearchBarSetting
-                    ) {
-                        if (!isScrolling.value || !hideSearchBarSetting) {
-                            SearchBarDefaults.InputFieldHeight + searchBarPaddingTop + 8.dp
-                        } else searchBarPaddingTop
-                    },
-                    label = "mosaicSearchBarPadding"
-                )
-
-                val density = LocalDensity.current
-                val searchBarPaddingPx by remember(density, searchBarPadding) {
-                    derivedStateOf { with(density) { searchBarPadding.roundToPx() } }
-                }
-
-                StickyHeaderGrid(
-                    state = mosaicGridState,
-                    modifier = Modifier.fillMaxSize(),
-                    headerMatcher = { item -> item.key.isHeaderKey || item.key.isIgnoredKey },
-                    searchBarOffset = { 28.roundSpToPx(density) + searchBarPaddingPx },
-                    toolbarOffset = { 0 },
-                    stickyHeader = {
-                        val show by remember {
-                            derivedStateOf {
-                                mediaState.value.media.isNotEmpty() && stickyHeaderItem != null
-                            }
-                        }
-                        AnimatedVisibility(
-                            visible = show,
-                            enter = enterAnimation,
-                            exit = exitAnimation
-                        ) {
-                            val text by rememberedDerivedState(stickyHeaderItem) { stickyHeaderItem ?: "" }
-                            Text(
-                                text = text,
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier
-                                    .background(
-                                        Brush.verticalGradient(
-                                            listOf(
-                                                MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
-                                                Color.Transparent
-                                            )
-                                        )
-                                    )
-                                    .padding(horizontal = 16.dp)
-                                    .padding(top = 24.dp + searchBarPadding, bottom = 24.dp)
-                                    .fillMaxWidth()
-                            )
-                        }
-                    }
-                ) {
                     MosaicPinchZoomLayout(
                         state = mosaicPinchState,
                         indicatorTopPadding = mosaicPaddingValues.calculateTopPadding() + 16.dp,
@@ -288,7 +223,7 @@ fun TimelineScreen(
                         state = mosaicGridState,
                     ) {
                         MosaicMediaGrid(
-                            modifier = Modifier.hazeSource(LocalHazeState.current),
+                            modifier = Modifier,
                             gridState = mosaicGridState,
                             columns = currentColumns,
                             mediaState = mediaState,
@@ -309,11 +244,10 @@ fun TimelineScreen(
                         )
                     }
                     }
-                }
             } else {
                 GridPinchZoomLayout(
                     state = pinchState,
-                    modifier = Modifier.hazeSource(LocalHazeState.current),
+                    modifier = Modifier,
                     indicatorTopPadding = it.calculateTopPadding() + 16.dp,
                 ) {
                     MediaGridView(
@@ -322,7 +256,7 @@ fun TimelineScreen(
                         paddingValues = remember(paddingValues, it) {
                             PaddingValues(
                                 top = it.calculateTopPadding(),
-                                bottom = paddingValues.calculateBottomPadding() + 128.dp
+                                        bottom = paddingValues.calculateBottomPadding() + 128.dp
                             )
                         },
                         searchBarPaddingTop = remember(paddingValues) {
@@ -331,7 +265,7 @@ fun TimelineScreen(
                         showSearchBar = true,
                         allowSelection = true,
                         canScroll = canScroll,
-                        enableStickyHeaders = true,
+                        enableStickyHeaders = false,
                         showMonthlyHeader = true,
                         aboveGridContent = whatsNewContent,
                         isScrolling = isScrolling,

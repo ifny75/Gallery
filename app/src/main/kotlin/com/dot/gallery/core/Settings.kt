@@ -486,13 +486,13 @@ object Settings {
 
         @Composable
         fun rememberAutoHideSearchBar() =
-            rememberPreference(key = AUTO_HIDE_SEARCHBAR, defaultValue = true)
+            rememberPreference(key = AUTO_HIDE_SEARCHBAR, defaultValue = false)
 
         private val AUTO_HIDE_NAVIGATIONBAR = booleanPreferencesKey("auto_hide_navigationbar")
 
         @Composable
         fun rememberAutoHideNavBar() =
-            rememberPreference(key = AUTO_HIDE_NAVIGATIONBAR, defaultValue = true)
+            rememberPreference(key = AUTO_HIDE_NAVIGATIONBAR, defaultValue = false)
 
         private val AUDIO_FOCUS = booleanPreferencesKey("audio_focus")
 
@@ -611,7 +611,7 @@ object Settings {
 
         @Composable
         fun rememberAppNameAlias() =
-            rememberPreference(key = APP_NAME_ALIAS, defaultValue = ALIAS_REFRA)
+            rememberPreference(key = APP_NAME_ALIAS, defaultValue = ALIAS_GALLERY)
 
         const val FAV_ICON_DISABLED = "disabled"
         const val FAV_ICON_BOTTOM_END = "bottom_end"
@@ -642,7 +642,7 @@ object Settings {
 
         @Composable
         fun rememberTimelineLayoutType() =
-            rememberPreference(key = TIMELINE_LAYOUT_TYPE, defaultValue = LAYOUT_MOSAIC)
+            rememberPreference(key = TIMELINE_LAYOUT_TYPE, defaultValue = LAYOUT_GRID)
 
         const val EDITOR_BUILTIN = "builtin"
         private val DEFAULT_IMAGE_EDITOR = stringPreferencesKey("default_image_editor")

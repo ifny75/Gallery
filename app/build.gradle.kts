@@ -26,7 +26,7 @@ apkVersioning {
     flavorVersionCodes.set(abiVersionCodes)
     versionCodeMultiplier.set(10)
     outputFileName.set("{appName}-{versionName}-{versionCode}{suffix}-{flavorName}-{buildType}")
-    variables.put("appName", "ReFra")
+    variables.put("appName", "Gallery")
     variables.put("suffix", if (includeMaps) "" else "-nomaps")
 }
 
@@ -46,7 +46,7 @@ android {
             useSupportLibrary = true
         }
         val mapsPrefix = if (includeMaps) "" else "-nomaps"
-        base.archivesName.set("ReFra-${versionName}-$versionCode$mapsPrefix")
+        base.archivesName.set("Gallery-${versionName}-$versionCode$mapsPrefix")
     }
 
     lint.baseline = file("lint-baseline.xml")
@@ -91,6 +91,17 @@ android {
             buildConfigField("Boolean", "MAPS_ENABLED", "$includeMaps")
             buildConfigField("String", "CONTENT_AUTHORITY", "\"com.dot.gallery.media_provider\"")
             buildConfigField("Boolean", "ENABLE_INDEXING", "true")
+        }
+        // Installable performance preview; same id/key as debug so user data survives updates.
+        create("preview") {
+            initWith(getByName("debug"))
+            matchingFallbacks += listOf("release", "debug")
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("debug")
+            setProguardFiles(listOf(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"))
+            versionNameSuffix = "-preview"
         }
         create("staging") {
             initWith(getByName("release"))

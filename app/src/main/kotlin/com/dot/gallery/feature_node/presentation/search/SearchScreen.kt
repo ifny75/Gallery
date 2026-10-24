@@ -1,5 +1,6 @@
 package com.dot.gallery.feature_node.presentation.search
 
+import com.dot.gallery.core.presentation.components.GalleryPageHeader
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.layout.LazyLayoutCacheWindow
 import androidx.compose.runtime.derivedStateOf
@@ -60,6 +62,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalFocusManager
+import com.dot.gallery.core.presentation.components.rememberGalleryScrollBehavior
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
@@ -84,6 +89,7 @@ import com.dot.gallery.core.Settings.Misc.rememberTimelineLayoutType
 import com.dot.gallery.core.Settings.Search.rememberSearchHistory
 import com.dot.gallery.core.SettingsEntity
 import com.dot.gallery.core.navigate
+import com.dot.gallery.core.toggleNavigationBar
 import com.dot.gallery.core.navigateUp
 import com.dot.gallery.core.presentation.components.EmptyMedia
 import com.dot.gallery.core.presentation.components.SelectionSheet
@@ -110,6 +116,7 @@ import kotlinx.coroutines.withContext
 
 
 @OptIn(
+    androidx.compose.material3.ExperimentalMaterial3Api::class,
     ExperimentalSharedTransitionApi::class, ExperimentalMaterial3ExpressiveApi::class,
     ExperimentalFoundationApi::class
 )
@@ -120,11 +127,24 @@ fun SearchScreen(
     animatedContentScope: AnimatedContentScope,
     viewModel: SearchViewModel,
 ) = with(sharedTransitionScope) {
+    val headerBehavior = rememberGalleryScrollBehavior()
+    val focusManager = LocalFocusManager.current
     val eventHandler = LocalEventHandler.current
+    val selectionActive by LocalMediaSelector.current.isSelectionActive.collectAsStateWithLifecycle()
+    LaunchedEffect(selectionActive) {
+        eventHandler.toggleNavigationBar(!selectionActive)
+    }
     val distributor = LocalMediaDistributor.current
     val searchResults by viewModel.searchResultsState.collectAsStateWithLifecycle()
     val query by viewModel.query.collectAsStateWithLifecycle()
     val selectedImageMedia by viewModel.selectedImageMedia.collectAsStateWithLifecycle()
+    val canClearSearch = searchResults.hasSearched || searchResults.isSearching || query.isNotBlank() || selectedImageMedia != null
+    val resetSearch = {
+        focusManager.clearFocus()
+        viewModel.clearQuery()
+    }
+    BackHandler(enabled = canClearSearch && !selectionActive, onBack = resetSearch)
+
     val isModelAvailable by viewModel.isModelAvailable.collectAsStateWithLifecycle()
     var searchHistory by rememberSearchHistory()
 
@@ -179,41 +199,18 @@ fun SearchScreen(
     }
     val searchIndexerState by viewModel.searchIndexerState.collectAsStateWithLifecycle()
     Scaffold(
-        modifier = Modifier.sharedBounds(
-            sharedContentState = rememberSharedContentState(key = "search_screen_bounds"),
-            animatedVisibilityScope = animatedContentScope
-        ),
+        modifier = Modifier.nestedScroll(headerBehavior.nestedScrollConnection),
         topBar = {
             Box(
-                modifier = Modifier.statusBarsPadding()
+                modifier = Modifier
             ) {
                 Column {
+                    GalleryPageHeader(title = stringResource(R.string.search), icon = Icons.Outlined.Search, scrollBehavior = headerBehavior)
                     Row(
                         modifier = Modifier
-                            .padding(start = 4.dp, top = 4.dp, bottom = 8.dp),
+                            .padding(horizontal = 24.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(
-                            modifier = Modifier
-                                .padding(horizontal = 8.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.surfaceContainer,
-                                    shape = CircleShape
-                                ),
-                            onClick = {
-                                if (query.isNotEmpty() || selectedImageMedia != null) {
-                                    viewModel.clearQuery()
-                                } else {
-                                    eventHandler.navigateUp()
-                                }
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(id = R.string.back_cd),
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
                         val outlineColor = Color.Transparent
                         OutlinedTextField(
                             modifier = Modifier
@@ -229,7 +226,9 @@ fun SearchScreen(
                                 unfocusedBorderColor = outlineColor,
                                 focusedBorderColor = outlineColor,
                                 errorBorderColor = outlineColor,
-                                disabledBorderColor = outlineColor
+                                disabledBorderColor = outlineColor,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                             ),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 imeAction = ImeAction.Search
@@ -252,7 +251,11 @@ fun SearchScreen(
                                     viewModel.addHistory(query)
                                 }
                             ),
-                            leadingIcon = selectedImageMedia?.let { media ->
+                            leadingIcon = if (canClearSearch) {
+                                { IconButton(onClick = resetSearch) {
+                                    Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.gallery_back_to_search))
+                                } }
+                            } else selectedImageMedia?.let { media ->
                                 {
                                     ImageSearchChip(
                                         media = media,
@@ -332,6 +335,7 @@ fun SearchScreen(
         Box(
             modifier = Modifier
                 .padding(contentPadding)
+                .padding(bottom = 104.dp)
                 .fillMaxSize(),
         ) {
             Column(
@@ -575,7 +579,7 @@ fun SearchScreen(
                     val metadataState =
                         distributor.metadataFlow.collectAsStateWithLifecycle(MediaMetadataState())
                     var canScroll by rememberSaveable { mutableStateOf(true) }
-                    var lastCellIndex by rememberGridSize()
+                    var lastCellIndex by rememberSaveable { mutableStateOf(cellsList.indexOf(GridCells.Fixed(2))) }
                     val timelineLayoutType by rememberTimelineLayoutType()
 
                     var sortByRelevance by rememberSaveable { mutableStateOf(true) }
@@ -598,9 +602,6 @@ fun SearchScreen(
                         }
                     }
 
-                    BackHandler {
-                        viewModel.clearQuery()
-                    }
 
                     val dateGroupedState = rememberedDerivedState { searchResults.results }
                     val relevanceOrderedState = rememberedDerivedState(searchResults.results) {
@@ -728,7 +729,7 @@ fun SearchScreen(
                                 metadataState = metadataState,
                                 allowSelection = true,
                                 showSearchBar = false,
-                                enableStickyHeaders = !useRelevanceOrder,
+                                enableStickyHeaders = false,
                                 hasToolbarOffset = false,
                                 paddingValues = remember(contentPadding) {
                                     PaddingValues(

@@ -112,32 +112,16 @@ fun <T : Media> GridPinchZoomScope.MediaGridView(
             mediaState = mediaState
         )
 
-        val hideSearchBarSetting by rememberAutoHideSearchBar()
-        val searchBarPadding by animateDpAsState(
-            targetValue = remember(
-                isScrolling.value,
-                showSearchBar,
-                searchBarPaddingTop,
-                hideSearchBarSetting
-            ) {
-                if (showSearchBar && (!isScrolling.value || !hideSearchBarSetting)) {
-                    SearchBarDefaults.InputFieldHeight + searchBarPaddingTop + 8.dp
-                } else if (showSearchBar && isScrolling.value) searchBarPaddingTop else 0.dp
-            },
-            label = "searchBarPadding"
-        )
+        val searchBarPadding = if (showSearchBar) paddingValues.calculateTopPadding() else 0.dp
 
         val density = LocalDensity.current
         val searchBarHeightPx = WindowInsets.statusBars.getTop(density)
-        val searchBarPaddingPx by remember(density, searchBarPadding) {
-            derivedStateOf { with(density) { searchBarPadding.roundToPx() } }
-        }
 
         StickyHeaderGrid(
             state = gridState,
             modifier = Modifier.fillMaxSize(),
             headerMatcher = { item -> item.key.isHeaderKey || item.key.isIgnoredKey },
-            searchBarOffset = { if (showSearchBar) 28.roundSpToPx(density) + searchBarPaddingPx else 0 },
+            searchBarOffset = { if (showSearchBar) with(density) { paddingValues.calculateTopPadding().roundToPx() } else 0 },
             toolbarOffset = { if (showSearchBar) 0 else if (hasToolbarOffset) 64.roundDpToPx(density) + searchBarHeightPx else 0 },
             stickyHeader = {
                 val show by remember {

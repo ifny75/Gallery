@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ReFra</string>
+    <string name="app_name">Gallery</string>
     <string name="nav_albums">Альбомы</string>
     <string name="searchbar_title"><![CDATA[Поиск фото и видео]]></string>
     <string name="header_today">Сегодня</string>
@@ -378,4 +378,21 @@
         <item quantity="many">%s эл.</item>
         <item quantity="other">%s эл.</item>
     </plurals>
+
+    <string name="gallery_photos">Фото</string>
+    <string name="gallery_all_pictures">Все фотографии</string>
+    <string name="gallery_bin">Корзина</string>
+    <string name="gallery_empty_bin">Корзина пуста</string>
+    <string name="gallery_more_options">Другие действия</string>
+    <string name="gallery_setup_subtitle">Ваши фотографии и видео</string>
+    <string name="gallery_setup_media_only">Выберите фотографии и видео для просмотра. Нужен только доступ к медиа. Уведомления, геоданные и доступ ко всем файлам не требуются.</string>
+    <string name="gallery_setup_denied">Разрешите доступ к фото или видео. Можно выбрать только отдельные фотографии.</string>
+    <string name="gallery_remove_metadata">Удалить метаданные — сохранить чистую PNG-копию</string>
+    <string name="gallery_metadata_removed">Чистая PNG-копия сохранена в Pictures/Private. Исходник сохранён.</string>
+    <string name="gallery_metadata_failed">Не удалось сохранить чистую копию. Попробуйте ещё раз.</string>
+    <string name="gallery_back_to_search">Назад к поиску</string>
+    <string name="gallery_authors">Авторы и участники</string>
+    <string name="gallery_metadata_warning_title">Удалить метаданные фото?</string>
+    <string name="gallery_metadata_warning">Будет сохранена новая PNG-копия без EXIF, GPS, данных камеры, дат, комментариев и XMP. Исходное фото сохранит свои метаданные. Копия — статичное SDR-изображение: анимация и HDR не сохраняются.</string>
+    <string name="gallery_metadata_confirm">Сохранить чистую копию</string>
 </resources>

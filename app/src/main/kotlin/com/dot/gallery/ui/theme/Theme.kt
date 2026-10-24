@@ -146,7 +146,18 @@ fun GalleryTheme(
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = if (forcedDarkTheme) colorScheme.copy(
+            background = Color(0xFF080808),
+            surface = Color(0xFF080808),
+            surfaceContainerLowest = Color(0xFF080808),
+            surfaceContainerLow = Color(0xFF101010),
+            surfaceContainer = Color(0xFF1B1B1B),
+            surfaceContainerHigh = Color(0xFF262626),
+            surfaceContainerHighest = Color(0xFF333333),
+            onBackground = Color(0xFFFAFAFA),
+            onSurface = Color(0xFFFAFAFA),
+            onSurfaceVariant = Color(0xFFAAAAAA),
+        ) else colorScheme,
         typography = Typography
     ) {
         CompositionLocalProvider(

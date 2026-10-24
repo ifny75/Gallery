@@ -39,9 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.dot.gallery.core.Settings
-import com.dot.gallery.core.Settings.Misc.rememberAllowBlur
 import com.dot.gallery.core.Settings.Misc.rememberFavoriteIconPosition
-import androidx.compose.ui.util.fastFirstOrNull
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dot.gallery.core.LocalMediaSelector
 import com.dot.gallery.core.presentation.components.LocalMediaImageRenderer
@@ -55,13 +53,7 @@ import com.dot.gallery.feature_node.domain.util.isFavorite
 import com.dot.gallery.feature_node.domain.util.isVideo
 import com.dot.gallery.feature_node.presentation.mediaview.components.video.VideoDurationHeader
 import com.dot.gallery.feature_node.presentation.mediaview.rememberedDerivedState
-import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
-import dev.chrisbanes.haze.materials.HazeMaterials
-import dev.chrisbanes.haze.rememberHazeState
 
-@OptIn(ExperimentalHazeMaterialsApi::class)
 @Composable
 fun <T : Media> MediaImage(
     modifier: Modifier = Modifier,
@@ -77,10 +69,10 @@ fun <T : Media> MediaImage(
     val selectionState by selector.isSelectionActive.collectAsStateWithLifecycle()
     val selectedMedia by selector.selectedMedia.collectAsStateWithLifecycle()
     val isSelected by rememberedDerivedState(selectionState, selectedMedia, media) {
-        selectionState && selectedMedia.any { it == media.id }
+        selectionState && media.id in selectedMedia
     }
     val metadata by rememberedDerivedState(metadataState.value) {
-        metadataState.value.metadata.fastFirstOrNull { it.mediaId == media.id }
+        metadataState.value.byMediaId[media.id]
     }
 
     val selectedSize by animateDpAsState(
@@ -92,7 +84,7 @@ fun <T : Media> MediaImage(
         label = "scale"
     )
     val selectedShapeSize by animateDpAsState(
-        targetValue = if (isSelected) 16.dp else 0.dp,
+        targetValue = if (isSelected) 20.dp else 12.dp,
         label = "selectedShapeSize"
     )
     val strokeSize by animateDpAsState(
@@ -107,8 +99,6 @@ fun <T : Media> MediaImage(
     val roundedShape = remember(selectedShapeSize) {
         RoundedCornerShape(selectedShapeSize)
     }
-    val allowBlur by rememberAllowBlur()
-    val badgeHazeState = rememberHazeState(blurEnabled = allowBlur)
 
     Box(
         modifier = Modifier
@@ -140,7 +130,6 @@ fun <T : Media> MediaImage(
                 .aspectRatio(aspectRatio)
                 .padding(selectedSize)
                 .clip(roundedShape)
-                .hazeSource(badgeHazeState)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainerHigh,
                     shape = roundedShape
@@ -175,12 +164,7 @@ fun <T : Media> MediaImage(
                     .scale(scale)
                     .padding(6.dp)
                     .clip(badgeShape)
-                    .hazeEffect(
-                        state = badgeHazeState,
-                        style = HazeMaterials.ultraThin(
-                            containerColor = Color.Black.copy(alpha = 0.35f)
-                        )
-                    )
+                    .background(Color.Black.copy(alpha = 0.65f))
                     .padding(horizontal = 5.dp, vertical = 3.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {

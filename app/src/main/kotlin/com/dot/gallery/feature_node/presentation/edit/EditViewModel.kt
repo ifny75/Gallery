@@ -16,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.dot.gallery.core.EditBackupManager
+import com.dot.gallery.core.util.metadataFreePixels
 import com.dot.gallery.core.MediaHandler
 import com.dot.gallery.feature_node.domain.model.Media
 import com.dot.gallery.feature_node.domain.model.Media.UriMedia
@@ -728,6 +729,34 @@ class EditViewModel @Inject constructor(
             else -> {
                 clearGpuPreviewEffects()
             }
+        }
+    }
+
+    /** Export a fresh pixel-only PNG without touching the source or its metadata. */
+    fun saveMetadataFreeCopy(onSuccess: () -> Unit, onFail: () -> Unit) {
+        if (_isSaving.value || _isProcessing.value) return
+        _isSaving.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            var clean: Bitmap? = null
+            val success = try {
+                flattenComposedMatrix()
+                val source = checkNotNull(lastRealBitmap())
+                clean = source.metadataFreePixels()
+                mediaHandler.saveImage(
+                    bitmap = clean,
+                    format = Bitmap.CompressFormat.PNG,
+                    mimeType = "image/png",
+                    relativePath = Environment.DIRECTORY_PICTURES + "/Private",
+                    displayName = "Photo_${System.currentTimeMillis()}.png"
+                ) != null
+            } catch (e: Exception) {
+                printError("Metadata-free export failed: ${e.message}")
+                false
+            } finally {
+                clean?.recycle()
+                _isSaving.value = false
+            }
+            withContext(Dispatchers.Main) { if (success) onSuccess() else onFail() }
         }
     }
 

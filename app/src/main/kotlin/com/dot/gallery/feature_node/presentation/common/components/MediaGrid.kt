@@ -86,7 +86,7 @@ fun <T : Media> GridPinchZoomScope.MediaGrid(
     animatedContentScope: AnimatedContentScope,
     onMediaClick: @DisallowComposableCalls (media: T) -> Unit
 ) {
-    LaunchedEffect(gridState.isScrollInProgress) {
+    LaunchedEffect(gridState) {
         snapshotFlow {
             gridState.isScrollInProgress
         }.collectLatest {
@@ -210,16 +210,6 @@ private fun <T : Media> GridPinchZoomScope.MediaGridContentWithHeaders(
         val allKeys by rememberedDerivedState {
             mappedData.fastFilter { it is MediaItem.MediaViewItem<T> }.fastMap { it.key }
         }
-        val isScrolling by rememberedDerivedState {
-            gridState.isScrollInProgress
-        }
-        var canAnimate by rememberSaveable {
-            mutableStateOf(!isScrolling)
-        }
-        LaunchedEffect(isScrolling) {
-            if (!canAnimate) delay(500)
-            canAnimate = !isScrolling
-        }
         val selector = LocalMediaSelector.current
         val isSelectionActive by selector.isSelectionActive.collectAsStateWithLifecycle()
         val selectedMedia = selector.selectedMedia.collectAsStateWithLifecycle()
@@ -262,6 +252,7 @@ private fun <T : Media> GridPinchZoomScope.MediaGridContentWithHeaders(
             state = gridState,
             modifier = modifier
                 .fillMaxSize()
+                .padding(horizontal = 6.dp)
                 .testTag("media_grid")
                 .photoGridDragHandler(
                     lazyGridState = gridState,
@@ -278,8 +269,8 @@ private fun <T : Media> GridPinchZoomScope.MediaGridContentWithHeaders(
             columns = gridCells,
             contentPadding = paddingValues,
             userScrollEnabled = canScroll,
-            horizontalArrangement = Arrangement.spacedBy(1.dp),
-            verticalArrangement = Arrangement.spacedBy(1.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             topContent()
 
@@ -307,11 +298,7 @@ private fun <T : Media> GridPinchZoomScope.MediaGridContentWithHeaders(
                         }
                     }
                     MediaItemHeader(
-                        modifier = Modifier
-                            .animateItem(
-                                fadeInSpec = null
-                            )
-                            .pinchItem(key = it.key),
+                        modifier = Modifier.pinchItem(key = it.key),
                         date = remember(it) {
                             it.text
                                 .replace("Today", stringToday)
@@ -336,11 +323,6 @@ private fun <T : Media> GridPinchZoomScope.MediaGridContentWithHeaders(
                     with(sharedTransitionScope) {
                         MediaImage(
                             modifier = Modifier
-                                .mediaSharedElement(
-                                    allowAnimation = canAnimate,
-                                    media = it.media,
-                                    animatedVisibilityScope = animatedContentScope
-                                )
                                 .animateItem(
                                     fadeInSpec = null,
                                     fadeOutSpec = spring()
@@ -401,16 +383,6 @@ private fun <T : Media> GridPinchZoomScope.MediaGridContent(
     val allKeys by rememberedDerivedState {
         mediaState.value.media.map { it.key }
     }
-    val isScrolling by rememberedDerivedState {
-        gridState.isScrollInProgress
-    }
-    var canAnimate by rememberSaveable {
-        mutableStateOf(!isScrolling)
-    }
-    LaunchedEffect(isScrolling) {
-        if (!canAnimate) delay(500)
-        canAnimate = !isScrolling
-    }
     val selector = LocalMediaSelector.current
     val selectedMedia = selector.selectedMedia.collectAsStateWithLifecycle()
 
@@ -433,8 +405,8 @@ private fun <T : Media> GridPinchZoomScope.MediaGridContent(
         columns = gridCells,
         contentPadding = paddingValues,
         userScrollEnabled = canScroll,
-        horizontalArrangement = Arrangement.spacedBy(1.dp),
-        verticalArrangement = Arrangement.spacedBy(1.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         topContent()
 
@@ -446,11 +418,6 @@ private fun <T : Media> GridPinchZoomScope.MediaGridContent(
             with(sharedTransitionScope) {
                 MediaImage(
                     modifier = Modifier
-                        .mediaSharedElement(
-                            allowAnimation = canAnimate,
-                            media = media,
-                            animatedVisibilityScope = animatedContentScope
-                        )
                         .animateItem(
                             fadeInSpec = null,
                             fadeOutSpec = spring()

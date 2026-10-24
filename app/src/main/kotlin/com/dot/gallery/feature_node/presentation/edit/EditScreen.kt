@@ -35,6 +35,7 @@ import androidx.compose.material.icons.outlined.Crop
 import androidx.compose.material.icons.outlined.Flip
 import androidx.compose.material.icons.outlined.GridOn
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.PrivacyTip
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -147,6 +148,7 @@ fun EditScreen2(
     undoLastPath: () -> Unit,
     redoLastPath: () -> Unit,
     clearDrawing: () -> Unit = {},
+    onRemoveMetadata: () -> Unit = {},
     onRevertToOriginal: () -> Unit = {},
     canUndo: Boolean = false,
     canRedo: Boolean = false,
@@ -193,6 +195,7 @@ fun EditScreen2(
         wasDrawing = isMarkupDrawing
     }
 
+    var showMetadataWarning by remember { mutableStateOf(false) }
     var showRevertDialog by remember { mutableStateOf(false) }
 
     // Track which tab is currently selected for the tab bar highlight
@@ -354,6 +357,17 @@ fun EditScreen2(
                                 style = MaterialTheme.typography.labelLarge
                             )
                         }
+                    }
+                    IconButton(
+                        onClick = { showMetadataWarning = true },
+                        enabled = currentImage != null && !isSaving && !isProcessing && !isReverting,
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.PrivacyTip,
+                            contentDescription = stringResource(R.string.gallery_remove_metadata),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
                     // Only show 3-dot menu if there are actions available
                     val hasMenuActions = (isChanged && canOverride) || isChanged || hasOriginalBackup
@@ -935,6 +949,23 @@ fun EditScreen2(
             )
         }
 
+        if (showMetadataWarning) {
+            AlertDialog(
+                onDismissRequest = { showMetadataWarning = false },
+                title = { Text(stringResource(R.string.gallery_metadata_warning_title)) },
+                text = { Text(stringResource(R.string.gallery_metadata_warning)) },
+                confirmButton = {
+                    TextButton(onClick = { showMetadataWarning = false; onRemoveMetadata() }) {
+                        Text(stringResource(R.string.gallery_metadata_confirm))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showMetadataWarning = false }) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                }
+            )
+        }
         // Revert dialog
         if (showRevertDialog) {
             AlertDialog(

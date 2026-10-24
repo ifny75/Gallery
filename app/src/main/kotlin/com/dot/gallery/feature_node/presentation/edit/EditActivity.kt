@@ -5,6 +5,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
+import com.dot.gallery.R
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -164,6 +166,16 @@ class EditActivity : ComponentActivity() {
                                     )
                                 }
                             }
+                        },
+                        onRemoveMetadata = {
+                            viewModel.saveMetadataFreeCopy(
+                                onSuccess = {
+                                    Toast.makeText(this@EditActivity, R.string.gallery_metadata_removed, Toast.LENGTH_LONG).show()
+                                },
+                                onFail = {
+                                    Toast.makeText(this@EditActivity, R.string.gallery_metadata_failed, Toast.LENGTH_LONG).show()
+                                }
+                            )
                         },
                         onSaveCopy = {
                             viewModel.saveCopy(

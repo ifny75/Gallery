@@ -44,19 +44,19 @@ fun MediaItemHeader(
         modifier
             .padding(
                 horizontal = 16.dp,
-                vertical = 24.dp
+                vertical = 16.dp
             )
             .fillMaxWidth()
     }
     val bigModifier = remember(modifier) {
         modifier
             .padding(horizontal = 16.dp)
-            .padding(top = 80.dp)
+            .padding(top = 28.dp, bottom = 12.dp)
     }
     val bigTextStyle = MaterialTheme.typography.headlineMedium.copy(
         fontWeight = FontWeight.Bold
     )
-    val smallTextStyle = MaterialTheme.typography.titleMedium
+    val smallTextStyle = MaterialTheme.typography.headlineSmall
     val headerModifier by rememberedDerivedState(showAsBig) {
         if (showAsBig) bigModifier else smallModifier
     }

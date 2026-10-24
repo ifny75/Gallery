@@ -7,7 +7,8 @@
 
     <style name="Theme.Gallery.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splashColorBackground</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/gallery_splash_animated</item>
+        <item name="windowSplashScreenAnimationDuration">700</item>
         <item name="postSplashScreenTheme">@style/Theme.Gallery</item>
     </style>
 

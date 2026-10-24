@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ReFra</string>
+    <string name="app_name">Gallery</string>
     <string name="app_name_gallery">Gallery</string>
     <string name="change_app_name">App name</string>
     <string name="change_app_name_summary">Change the app name shown on your launcher</string>
@@ -104,7 +104,7 @@
     <string name="video">Video</string>
     <string name="close">Close</string>
     <string name="navigate_up">Navigate up</string>
-    <string name="manage_media_title">Allow ReFra to Manage your Media</string>
+    <string name="manage_media_title">Allow Gallery to Manage your Media</string>
     <string name="manage_media_summary">This setting just skips any extra confirmation dialogs while performing various actions like marking as favorite.</string>
     <string name="skip">Skip</string>
     <string name="allow">Allow</string>
@@ -201,9 +201,9 @@
     <string name="error_copying_to_clipboard">Failed to copy to clipboard</string>
     <string name="ignored_albums">Ignored Albums</string>
     <string name="select_an_album">Select an album</string>
-    <string name="blacklist_summary">Ignore albums from ReFra</string>
+    <string name="blacklist_summary">Ignore albums from Gallery</string>
     <string name="add_to_ignored">Add to ignored albums</string>
-    <string name="add_to_ignored_summary">Remove an album from showing inside the ReFra</string>
+    <string name="add_to_ignored_summary">Remove an album from showing inside the Gallery</string>
     <string name="remove_from_ignored">Remove from ignored list</string>
     <string name="remove_from_ignored_summary">Remove from the ignored list the album named %1$s</string>
     <string name="override">Override</string>
@@ -396,7 +396,7 @@
     <string name="no_classification_summary">Turning this on will remove any UI regarding image classification or managing it. It will NOT delete your classified images database</string>
     <string name="classification_unwanted">I don\'t want this</string>
     <string name="classification_unwanted_summary">I don\'t want this, please remove it.\n(It can be enabled again in the settings)</string>
-    
+
     <!-- AI Model Management -->
     <string name="ai_models_not_installed">AI models are not installed. Download them from Settings > Smart Features.</string>
     <string name="ai_models_manager">AI Models Manager</string>
@@ -508,7 +508,7 @@
     <string name="add_reference_photos">Add photos</string>
     <string name="select_reference_photos">Select reference photos</string>
     <string name="reference_images_count">%1$d selected</string>
-    
+
     <string name="restore">Restore</string>
     <string name="encrypted">Encrypted</string>
     <string name="date_format_settings">Date Format</string>
@@ -550,7 +550,7 @@
     <string name="vault_notification_channel_name">Vault Operations</string>
     <string name="vault_notification_channel_description">Progress of encryption / decryption tasks</string>
     <string name="decrypt_vault">Decrypt Vault</string>
-    <string name="restore_vault_summary">The current vault and its content will be decrypted and restored.\nThis action will make your content accessible again in the ReFra.</string>
+    <string name="restore_vault_summary">The current vault and its content will be decrypted and restored.\nThis action will make your content accessible again in the Gallery.</string>
     <string name="restore_vault_title">Confirm Decryption?</string>
     <string name="yes">Yes</string>
     <string name="vault_deletion_title">Confirm Deletion?</string>
@@ -1024,4 +1024,34 @@
     <string name="cast_perm_network_state_desc">Required for checking network connectivity</string>
     <string name="cast_perm_multicast">Multicast</string>
     <string name="cast_perm_multicast_desc">Required for automatic device discovery on your network</string>
+
+    <string name="gallery_photos">Photos</string>
+    <string name="gallery_all_pictures">All pictures</string>
+    <string name="gallery_bin">Bin</string>
+    <string name="gallery_empty_bin">No items</string>
+    <string name="gallery_more_options">More options</string>
+    <string name="gallery_setup_subtitle">Your photos and videos, simply</string>
+    <string name="gallery_setup_media_only">Choose which photos and videos to show. Only media access is requested. Notifications, location and all-files access are not needed.</string>
+    <string name="gallery_setup_denied">Allow access to photos or videos to continue. You can also choose specific photos.</string>
+    <string name="gallery_remove_metadata">Remove metadata — save clean PNG copy</string>
+    <string name="gallery_metadata_removed">Clean PNG saved in Pictures/Private. The original is unchanged.</string>
+    <string name="gallery_metadata_failed">Could not save the clean copy. Please try again.</string>
+
+
+
+
+
+
+
+
+
+    <string name="gallery_back_to_search">Back to search</string>
+    <string name="gallery_authors">Authors &amp; contributors</string>
+    <string name="gallery_authors_intro">This project stands on the work of the developers and contributors who came before it.</string>
+    <string name="gallery_credit_refra">ReFra — the original Android gallery project.</string>
+    <string name="gallery_credit_graphene">GrapheneOS Gallery — the upstream fork on which this repository is based.</string>
+    <string name="gallery_credit_contributors">Contributors — everyone helping improve the codebase.</string>
+    <string name="gallery_metadata_warning_title">Remove photo metadata?</string>
+    <string name="gallery_metadata_warning">A new PNG copy will be saved without EXIF, GPS, camera information, dates, comments or XMP. The original photo will keep its metadata. The copy is a static SDR image; animation and HDR data are not preserved.</string>
+    <string name="gallery_metadata_confirm">Save clean copy</string>
 </resources>

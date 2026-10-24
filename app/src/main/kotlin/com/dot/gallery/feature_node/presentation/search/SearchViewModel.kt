@@ -32,6 +32,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -310,13 +312,18 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    private suspend fun publishResults(state: SearchResultsState) {
+        // CPU-bound filters can finish after Back; a cancelled query must never restore its UI.
+        currentCoroutineContext().ensureActive()
+        _searchResultsState.value = state
+    }
+
     fun clearQuery() {
-        viewModelScope.launch {
-            searchJob?.cancel()
-            _query.tryEmit("")
-            _selectedImageMedia.tryEmit(null)
-            _searchResultsState.tryEmit(SearchResultsState())
-        }
+        searchJob?.cancel()
+        searchJob = null
+        _query.value = ""
+        _selectedImageMedia.value = null
+        _searchResultsState.value = SearchResultsState()
     }
 
     fun setSelectedMedia(media: Media.UriMedia) {
@@ -332,15 +339,16 @@ class SearchViewModel @Inject constructor(
     }
 
     fun clearSelectedMedia() {
+        searchJob?.cancel()
         _selectedImageMedia.value = null
-        _searchResultsState.tryEmit(SearchResultsState())
+        _searchResultsState.value = SearchResultsState()
     }
 
     fun searchByImage(media: Media.UriMedia) {
         searchJob?.cancel()
         _query.value = ""
         searchJob = viewModelScope.launch(Dispatchers.IO) {
-            _searchResultsState.tryEmit(
+            publishResults(
                 SearchResultsState(
                     hasSearched = true,
                     isSearching = true,
@@ -354,7 +362,7 @@ class SearchViewModel @Inject constructor(
                 val bitmap = contentResolver.openInputStream(uri)?.use { inputStream ->
                     BitmapFactory.decodeStream(inputStream)
                 } ?: run {
-                    _searchResultsState.tryEmit(
+                    publishResults(
                         SearchResultsState(
                             hasSearched = true,
                             isSearching = false,
@@ -366,7 +374,7 @@ class SearchViewModel @Inject constructor(
                 }
 
                 if (!searchHelper.isAvailable) {
-                    _searchResultsState.tryEmit(
+                    publishResults(
                         SearchResultsState(
                             hasSearched = true,
                             isSearching = false,
@@ -398,7 +406,7 @@ class SearchViewModel @Inject constructor(
                         extendedDateFormat = dateFormats.value.second,
                         weeklyDateFormat = dateFormats.value.third
                     )
-                    _searchResultsState.tryEmit(
+                    publishResults(
                         SearchResultsState(
                             hasSearched = true,
                             isSearching = false,
@@ -409,7 +417,7 @@ class SearchViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                _searchResultsState.tryEmit(
+                publishResults(
                     SearchResultsState(
                         hasSearched = true,
                         isSearching = false,
@@ -434,7 +442,7 @@ class SearchViewModel @Inject constructor(
                     newMediaState.media.find { it.id == mediaItem.id }
                 }
                 if (updatedResults.isNotEmpty()) {
-                    _searchResultsState.tryEmit(
+                    publishResults(
                         resultsState.copy(
                             results = MediaState(
                                 media = updatedResults,
@@ -471,7 +479,7 @@ class SearchViewModel @Inject constructor(
                 extendedDateFormat = dateFormats.value.second,
                 weeklyDateFormat = dateFormats.value.third
             )
-            _searchResultsState.tryEmit(
+            publishResults(
                 SearchResultsState(
                     hasSearched = true,
                     isSearching = false,
@@ -505,7 +513,7 @@ class SearchViewModel @Inject constructor(
                 extendedDateFormat = dateFormats.value.second,
                 weeklyDateFormat = dateFormats.value.third
             )
-            _searchResultsState.tryEmit(
+            publishResults(
                 SearchResultsState(
                     hasSearched = true,
                     isSearching = false,
@@ -541,7 +549,7 @@ class SearchViewModel @Inject constructor(
                 extendedDateFormat = dateFormats.value.second,
                 weeklyDateFormat = dateFormats.value.third
             )
-            _searchResultsState.tryEmit(
+            publishResults(
                 SearchResultsState(
                     hasSearched = true,
                     isSearching = false,
@@ -578,7 +586,7 @@ class SearchViewModel @Inject constructor(
                 extendedDateFormat = dateFormats.value.second,
                 weeklyDateFormat = dateFormats.value.third
             )
-            _searchResultsState.tryEmit(
+            publishResults(
                 SearchResultsState(
                     hasSearched = true,
                     isSearching = false,
@@ -591,14 +599,14 @@ class SearchViewModel @Inject constructor(
 
     fun setQuery(query: String, apply: Boolean = true) {
         searchJob?.cancel()
+        _query.value = query
         searchJob = viewModelScope.launch(Dispatchers.IO) {
-            _query.tryEmit(query)
             if (query.isEmpty() || !apply) {
-                _searchResultsState.tryEmit(SearchResultsState())
+                publishResults(SearchResultsState())
                 return@launch
             }
             val results = mutableListOf<Pair<Float, Media.UriMedia>>()
-            _searchResultsState.tryEmit(
+            publishResults(
                 SearchResultsState(
                     hasSearched = true,
                     isSearching = true,
@@ -627,7 +635,7 @@ class SearchViewModel @Inject constructor(
                     extendedDateFormat = dateFormats.value.second,
                     weeklyDateFormat = dateFormats.value.third
                 )
-                _searchResultsState.tryEmit(
+                publishResults(
                     SearchResultsState(
                         hasSearched = true,
                         isSearching = false,
@@ -656,7 +664,7 @@ class SearchViewModel @Inject constructor(
                     extendedDateFormat = dateFormats.value.second,
                     weeklyDateFormat = dateFormats.value.third
                 )
-                _searchResultsState.tryEmit(
+                publishResults(
                     SearchResultsState(
                         hasSearched = true,
                         isSearching = false,
@@ -680,7 +688,7 @@ class SearchViewModel @Inject constructor(
                     }
 
                     results.mergeWithHighestScore(searchResultsMedia)
-                    _searchResultsState.tryEmit(
+                    publishResults(
                         SearchResultsState(
                             hasSearched = true,
                             isSearching = false,
@@ -700,7 +708,7 @@ class SearchViewModel @Inject constructor(
             }
             val fuzzySearchResults = allMedia.parseFuzzySearch(query)
             results.mergeWithHighestScore(fuzzySearchResults)
-            _searchResultsState.tryEmit(
+            publishResults(
                 SearchResultsState(
                     hasSearched = true,
                     isSearching = false,
@@ -717,7 +725,7 @@ class SearchViewModel @Inject constructor(
                 )
             )
             if (results.isEmpty()) {
-                _searchResultsState.tryEmit(
+                publishResults(
                     SearchResultsState(
                         hasSearched = true,
                         isSearching = false,

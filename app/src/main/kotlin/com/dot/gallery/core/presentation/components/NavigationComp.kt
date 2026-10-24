@@ -65,7 +65,7 @@ import com.dot.gallery.core.Settings.Misc.rememberLastScreen
 import com.dot.gallery.core.Settings.Misc.rememberTimelineGroupByMonth
 import com.dot.gallery.core.navigate
 import com.dot.gallery.core.presentation.components.util.OnLifecycleEvent
-import com.dot.gallery.core.presentation.components.util.permissionGranted
+import com.dot.gallery.core.presentation.components.util.hasMediaReadAccess
 import com.dot.gallery.core.presentation.vm.NavigationViewModel
 import com.dot.gallery.core.toggleNavigationBar
 import com.dot.gallery.feature_node.domain.model.MediaState
@@ -101,6 +101,7 @@ import com.dot.gallery.feature_node.presentation.mediaview.MediaViewScreenRoute
 import com.dot.gallery.feature_node.presentation.mediaview.rememberedDerivedState
 import com.dot.gallery.feature_node.presentation.search.SearchScreen
 import com.dot.gallery.feature_node.presentation.search.SearchViewModel
+import com.dot.gallery.feature_node.presentation.settings.AuthorsScreen
 import com.dot.gallery.feature_node.presentation.settings.SettingsScreen
 import com.dot.gallery.feature_node.presentation.settings.subsettings.ColorPaletteScreen
 
@@ -141,9 +142,9 @@ fun NavigationComp(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val groupTimelineByMonth by rememberTimelineGroupByMonth()
     val context = LocalContext.current
-    var permissionState by rememberSaveable { mutableStateOf(context.permissionGranted(Constants.PERMISSIONS)) }
+    var permissionState by rememberSaveable { mutableStateOf(context.hasMediaReadAccess()) }
     rememberMultiplePermissionsState(Constants.PERMISSIONS) {
-        permissionState = it.all { item -> item.value }
+        permissionState = context.hasMediaReadAccess()
     }
     var lastStartScreen by rememberLastScreen()
     val forcedLastScreen by rememberForcedLastScreen()
@@ -167,7 +168,7 @@ fun NavigationComp(
     }
 
     var lastShouldDisplay by rememberSaveable {
-        mutableStateOf(bottomNavEntries.find { item -> item.route == currentDest } != null)
+        mutableStateOf(isGalleryBrowseRoute(currentDest, bottomNavEntries))
     }
     val shouldSkipAuth = rememberSaveable {
         mutableStateOf(false)
@@ -177,7 +178,7 @@ fun NavigationComp(
     LaunchedEffect(navBackStackEntry) {
         navBackStackEntry?.destination?.route?.let {
             val shouldDisplayBottomBar =
-                bottomNavEntries.find { item -> item.route == it } != null && !searchBarActive.value
+                isGalleryBrowseRoute(it, bottomNavEntries) && !searchBarActive.value
             if (lastShouldDisplay != shouldDisplayBottomBar) {
                 bottomBarState.value = shouldDisplayBottomBar
                 lastShouldDisplay = shouldDisplayBottomBar
@@ -729,6 +730,7 @@ fun NavigationComp(
                     animatedContentScope = this
                 )
             }
+            composable(route = Screen.AuthorsScreen()) { AuthorsScreen() }
             composable(
                 route = Screen.SettingsScreen()
             ) {

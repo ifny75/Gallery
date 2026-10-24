@@ -53,8 +53,7 @@ val GlideMediaImageRenderer = object : MediaImageRenderer {
             loading = placeholder(ColorDrawable(0x4D444444)),
             failure = placeholder(ColorDrawable(0x33444444)),
             requestBuilderTransform = {
-                var request = it.centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL)
-                request = request.thumbnail(request.clone().sizeMultiplier(0.4f))
+                var request = it.centerCrop().diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 if (signature != null) {
                     request = request.signature(ObjectKey(signatureStr))
                 }

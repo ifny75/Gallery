@@ -10,3 +10,8 @@ fun Context.permissionGranted(list: List<String>): Boolean {
     }
     return granted
 }
+fun Context.hasMediaReadAccess(): Boolean = com.dot.gallery.core.MediaAccessPolicy.hasReadAccess(
+    android.os.Build.VERSION.SDK_INT,
+    (com.dot.gallery.core.Constants.PERMISSIONS + "android.permission.READ_MEDIA_VISUAL_USER_SELECTED")
+        .filter { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }.toSet()
+)

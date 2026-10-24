@@ -30,7 +30,7 @@ import com.dot.gallery.feature_node.presentation.trashed.components.TrashedNavAc
 @Composable
 fun <T: Media> TrashedGridScreen(
     paddingValues: PaddingValues,
-    albumName: String = stringResource(id = R.string.trash),
+    albumName: String = stringResource(id = R.string.gallery_bin),
     mediaState: State<MediaState<T>>,
     metadataState: State<MediaMetadataState>,
     clearSelection: () -> Unit,
@@ -43,6 +43,7 @@ fun <T: Media> TrashedGridScreen(
     mediaState = mediaState,
     metadataState = metadataState,
     allowHeaders = false,
+    allowNavBar = true,
     enableStickyHeaders = false,
     navActionsContent = { _: MutableState<Boolean>,
                           _: ActivityResultLauncher<IntentSenderRequest> ->

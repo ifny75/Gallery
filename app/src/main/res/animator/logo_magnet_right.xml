@@ -1,0 +1,1 @@
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android" android:propertyName="translateX" android:valueFrom="100" android:valueTo="0" android:valueType="floatType" android:duration="700" android:interpolator="@android:interpolator/overshoot" />

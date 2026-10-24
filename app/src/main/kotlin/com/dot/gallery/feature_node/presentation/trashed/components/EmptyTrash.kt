@@ -24,23 +24,24 @@ import com.dot.gallery.R
 @Composable
 fun EmptyTrash(
     modifier: Modifier = Modifier,
-    title: String = stringResource(R.string.empty_trash_title),
+    title: String = stringResource(R.string.gallery_empty_bin),
 ) {
     Column(
-        modifier = modifier.padding(top = 64.dp),
+        modifier = modifier.padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
     ) {
         Icon(
             modifier = Modifier
-                .size(128.dp),
+                .size(56.dp),
             imageVector = Icons.Outlined.Delete,
             contentDescription = stringResource(R.string.empty_trash_cd),
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
         )
         Text(
             text = title,
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

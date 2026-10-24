@@ -277,7 +277,6 @@ private fun GeneralListScreen(
                 add(otherSectionPref)
                 add(secureModePref)
                 add(allowVibrationsPref)
-                add(appNamePref)
                 add(vaultSectionPref)
                 add(vaultEncryptPref)
             }

@@ -5,6 +5,9 @@
 
 package com.dot.gallery.feature_node.presentation.common
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
+import com.dot.gallery.core.presentation.components.GalleryPageHeader
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -154,15 +157,17 @@ fun <T: Media> MediaScreen(
                 end = paddingValues.calculateEndPadding(LocalLayoutDirection.current)
             )
     ) {
-        val scaffoldModifier = remember(showSearchBar) {
-            if (!showSearchBar) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-            else Modifier
-        }
+        val scaffoldModifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
         Scaffold(
             modifier = scaffoldModifier,
             topBar = {
+                if (target == com.dot.gallery.core.Constants.Target.TARGET_TRASH) {
+                    GalleryPageHeader(title = albumName, icon = Icons.Outlined.Delete, scrollBehavior = scrollBehavior) {
+                        NavigationActions(actions = navActionsContent, onActivityResult = onActivityResult)
+                    }
+                }
                 AnimatedVisibility(
-                    visible = !showSearchBar,
+                    visible = !showSearchBar && target != com.dot.gallery.core.Constants.Target.TARGET_TRASH,
                     enter = enterAnimation,
                     exit = exitAnimation
                 ) {
@@ -202,6 +207,7 @@ fun <T: Media> MediaScreen(
                     exit = exitAnimation
                 ) {
                     MainSearchBar(
+                        scrollBehavior = scrollBehavior,
                         isScrolling = isScrolling,
                         sharedTransitionScope = sharedTransitionScope,
                         animatedContentScope = animatedContentScope,
