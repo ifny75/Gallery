@@ -1070,4 +1070,27 @@
     <string name="gallery_update_none">No compatible update available</string>
     <string name="gallery_update_error">Could not check for updates. Try again later.</string>
     <string name="gallery_update_later">Later</string>
+    <string name="gallery_release_424_notes_title">Changes from ifny75/Gallery</string>
+    <string name="gallery_release_424_notes_desc">What’s new now describes this Gallery fork. Open the repository history to see the corresponding commits.</string>
+    <string name="gallery_release_423_delete_title">Delete is always visible</string>
+    <string name="gallery_release_423_delete_desc">Trash and Metadata are the first actions when selecting photos. Deleting still requires confirmation.</string>
+    <string name="gallery_release_422_scroll_title">Photos move with the header</string>
+    <string name="gallery_release_422_scroll_desc">Photos start moving immediately as the large heading transitions into the top bar. Search navigation and date-heading animations were corrected.</string>
+    <string name="gallery_release_422_glass_title">Glass navigation and selection panels</string>
+    <string name="gallery_release_422_glass_desc">Navigation and photo-selection panels use a shared blurred backdrop. Scrolling and thumbnail rendering were optimized.</string>
+    <string name="gallery_release_422_metadata_title">Clean copies of selected photos</string>
+    <string name="gallery_release_422_metadata_desc">The editor and selection panel can save new static SDR PNG copies without EXIF, GPS or XMP. A warning explains the export; originals stay unchanged.</string>
+    <string name="gallery_release_422_appearance_title">New Appearance and author credits</string>
+    <string name="gallery_release_422_appearance_desc">Appearance previews the new Gallery interface, system accents and glass panels. Authors credits ReFra, GrapheneOS Gallery and ifny75.</string>
+    <string name="gallery_release_422_updates_title">Updates from this repository</string>
+    <string name="gallery_release_422_updates_desc">Gallery checks ifny75/Gallery releases for a newer matching build and shows an update banner. Download and Android installation require confirmation.</string>
+    <string name="gallery_release_421_design_title">Gallery, redesigned</string>
+    <string name="gallery_release_421_design_desc">Photos, Albums, Search and Bin use a dark interface with rounded thumbnails and system theme accents.</string>
+    <string name="gallery_release_421_brand_title">New identity and animated logo</string>
+    <string name="gallery_release_421_brand_desc">Gallery replaces the old app branding. The four outer logo elements animate toward the landscape at startup.</string>
+    <string name="gallery_release_421_access_title">Simpler first launch</string>
+    <string name="gallery_release_421_access_desc">Onboarding asks for access to photos and videos. Unrelated permission steps were removed.</string>
+    <string name="gallery_release_source">Changes from your Gallery repository</string>
+    <string name="gallery_release_source_description">Release notes for ifny75/Gallery, maintained alongside the application code.</string>
+    <string name="gallery_release_history">View commits on GitHub</string>
 </resources>

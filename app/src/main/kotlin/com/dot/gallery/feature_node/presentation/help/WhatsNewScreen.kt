@@ -34,6 +34,8 @@ import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -46,23 +48,19 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dot.gallery.R
-import com.dot.gallery.core.LocalEventHandler
-import com.dot.gallery.core.navigate
 import com.dot.gallery.core.presentation.components.NavigationBackButton
 import com.dot.gallery.feature_node.presentation.help.data.HelpRepository
 import com.dot.gallery.feature_node.presentation.help.data.ReleaseHighlight
 import com.dot.gallery.feature_node.presentation.help.data.ReleaseNotes
 import com.dot.gallery.feature_node.presentation.util.PreviewHost
-import com.dot.gallery.feature_node.presentation.util.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WhatsNewScreen() {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    val eventHandler = LocalEventHandler.current
+    val uriHandler = LocalUriHandler.current
 
     val allReleases = remember { HelpRepository.getAllReleases() }
 
@@ -91,15 +89,20 @@ fun WhatsNewScreen() {
             ),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(stringResource(R.string.gallery_release_source), style = MaterialTheme.typography.titleLarge)
+                    Text(stringResource(R.string.gallery_release_source_description),
+                        style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    TextButton(onClick = { uriHandler.openUri("https://github.com/ifny75/Gallery/commits/main/") }) {
+                        Text(stringResource(R.string.gallery_release_history))
+                    }
+                }
+            }
             items(allReleases, key = { it.versionCode }) { release ->
                 ReleaseCard(
                     release = release,
                     isLatest = release == allReleases.first(),
-                    onHighlightClick = { highlight ->
-                        highlight.tipId?.let { id ->
-                            eventHandler.navigate(Screen.TutorialDetailScreen.tipId(id))
-                        }
-                    }
                 )
             }
         }
@@ -110,7 +113,6 @@ fun WhatsNewScreen() {
 private fun ReleaseCard(
     release: ReleaseNotes,
     isLatest: Boolean,
-    onHighlightClick: (ReleaseHighlight) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -163,7 +165,6 @@ private fun ReleaseCard(
                     }
                     HighlightItem(
                         highlight = highlight,
-                        onClick = { onHighlightClick(highlight) }
                     )
                 }
             }
@@ -174,11 +175,9 @@ private fun ReleaseCard(
 @Composable
 private fun HighlightItem(
     highlight: ReleaseHighlight,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
@@ -208,15 +207,11 @@ private fun HighlightItem(
                     text = stringResource(highlight.title),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = stringResource(highlight.description),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

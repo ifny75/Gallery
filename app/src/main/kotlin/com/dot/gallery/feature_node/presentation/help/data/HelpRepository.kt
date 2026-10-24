@@ -731,99 +731,46 @@ object HelpRepository {
         SETTINGS_APPEARANCE_TIPS + SETTINGS_GENERAL_TIPS + SETTINGS_NAV_TIPS + SETTINGS_SMART_TIPS +
         GESTURE_TIPS + SELECTION_TIPS + ACCESSIBILITY_TIPS
 
+    // Fork release history: update alongside each ifny75/Gallery release.
     private val ALL_RELEASES: List<ReleaseNotes> = listOf(
+        ReleaseNotes(
+            versionName = "4.2.4",
+            versionCode = 42104,
+            releaseDate = "2026-10-25",
+            highlights = listOf(
+                ReleaseHighlight(title = R.string.gallery_release_424_notes_title, description = R.string.gallery_release_424_notes_desc, icon = HelpIcon.ofVector(Icons.Outlined.EditNote))
+            )
+        ),
+        ReleaseNotes(
+            versionName = "4.2.3",
+            versionCode = 42103,
+            releaseDate = "2026-10-24",
+            highlights = listOf(
+                ReleaseHighlight(title = R.string.gallery_release_423_delete_title, description = R.string.gallery_release_423_delete_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections))
+            )
+        ),
+        ReleaseNotes(
+            versionName = "4.2.2",
+            versionCode = 42102,
+            releaseDate = "2026-10-24",
+            highlights = listOf(
+                ReleaseHighlight(title = R.string.gallery_release_422_scroll_title, description = R.string.gallery_release_422_scroll_desc, icon = HelpIcon.ofVector(Icons.Outlined.ZoomIn)),
+                ReleaseHighlight(title = R.string.gallery_release_422_glass_title, description = R.string.gallery_release_422_glass_desc, icon = HelpIcon.ofVector(Icons.Outlined.Palette)),
+                ReleaseHighlight(title = R.string.gallery_release_422_metadata_title, description = R.string.gallery_release_422_metadata_desc, icon = HelpIcon.ofVector(Icons.Outlined.Lock)),
+                ReleaseHighlight(title = R.string.gallery_release_422_appearance_title, description = R.string.gallery_release_422_appearance_desc, icon = HelpIcon.ofVector(Icons.Outlined.Settings)),
+                ReleaseHighlight(title = R.string.gallery_release_422_updates_title, description = R.string.gallery_release_422_updates_desc, icon = HelpIcon.ofVector(Icons.Outlined.CloudDownload))
+            )
+        ),
         ReleaseNotes(
             versionName = "4.2.1",
             versionCode = 42101,
-            releaseDate = "2026-05-12",
+            releaseDate = "2026-10-24",
             highlights = listOf(
-                ReleaseHighlight(tipId = "action_cast", title = R.string.help_release_421_fcast_casting_title, description = R.string.help_release_421_fcast_casting_desc, icon = HelpIcon.ofVector(Icons.Outlined.Cast)),
-                ReleaseHighlight(tipId = "viewer_auto_contrast", title = R.string.help_release_421_auto_contrast_title, description = R.string.help_release_421_auto_contrast_desc, icon = HelpIcon.ofVector(Icons.Outlined.Contrast)),
-                ReleaseHighlight(tipId = "vault_overhaul", title = R.string.help_release_421_vault_overhaul_title, description = R.string.help_release_421_vault_overhaul_desc, icon = HelpIcon.ofVector(Icons.Outlined.Lock)),
-                ReleaseHighlight(tipId = "selection_right_align", title = R.string.help_release_421_right_align_actions_title, description = R.string.help_release_421_right_align_actions_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = null, title = R.string.help_release_421_nomaps_withml_title, description = R.string.help_release_421_nomaps_withml_desc, icon = HelpIcon.ofVector(Icons.Outlined.CloudDownload)),
-                ReleaseHighlight(tipId = null, title = R.string.help_release_421_bugfixes_title, description = R.string.help_release_421_bugfixes_desc, icon = HelpIcon.ofVector(Icons.Outlined.BugReport))
+                ReleaseHighlight(title = R.string.gallery_release_421_design_title, description = R.string.gallery_release_421_design_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
+                ReleaseHighlight(title = R.string.gallery_release_421_brand_title, description = R.string.gallery_release_421_brand_desc, icon = HelpIcon.ofVector(Icons.Outlined.AutoAwesome)),
+                ReleaseHighlight(title = R.string.gallery_release_421_access_title, description = R.string.gallery_release_421_access_desc, icon = HelpIcon.ofVector(Icons.Outlined.Lock))
             )
         ),
-        ReleaseNotes(
-            versionName = "4.2.0",
-            versionCode = 42001,
-            releaseDate = "2026-05-01",
-            highlights = listOf(
-                ReleaseHighlight(tipId = "albums_groups", title = R.string.help_release_420_album_groups_title, description = R.string.help_release_420_album_groups_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = "albums_merge_by_name", title = R.string.help_release_420_merge_albums_title, description = R.string.help_release_420_merge_albums_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = null, title = R.string.help_release_420_merge_subfolders_title, description = R.string.help_release_420_merge_subfolders_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = null, title = R.string.help_release_420_video_seeking_title, description = R.string.help_release_420_video_seeking_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = "search_ai", title = R.string.help_release_420_image_search_title, description = R.string.help_release_420_image_search_desc, icon = HelpIcon.ofVector(Icons.Outlined.ImageSearch)),
-                ReleaseHighlight(tipId = "timeline_layout_type", title = R.string.help_release_420_mosaic_layout_title, description = R.string.help_release_420_mosaic_layout_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = "albums_collections", title = R.string.help_release_420_collections_title, description = R.string.help_release_420_collections_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = null, title = R.string.help_release_420_settings_revamp_title, description = R.string.help_release_420_settings_revamp_desc, icon = HelpIcon.ofVector(Icons.Outlined.Settings)),
-                ReleaseHighlight(tipId = null, title = R.string.help_release_420_base_button_title, description = R.string.help_release_420_base_button_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = "ai_categories", title = R.string.help_release_420_categories_refresh_title, description = R.string.help_release_420_categories_refresh_desc, icon = HelpIcon.ofVector(Icons.Outlined.AutoAwesome)),
-                ReleaseHighlight(tipId = "settings_selection_actions", title = R.string.help_release_420_selection_sheet_title, description = R.string.help_release_420_selection_sheet_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = "timeline_group_similar", title = R.string.help_release_420_group_similar_settings_title, description = R.string.help_release_420_group_similar_settings_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = "ai_models", title = R.string.help_release_420_optional_ml_title, description = R.string.help_release_420_optional_ml_desc, icon = HelpIcon.ofVector(Icons.Outlined.CloudDownload)),
-                ReleaseHighlight(tipId = null, title = R.string.help_release_420_bugfixes_title, description = R.string.help_release_420_bugfixes_desc, icon = HelpIcon.ofVector(Icons.Outlined.BugReport))
-            )
-        ),
-        ReleaseNotes(
-            versionName = "4.1.3",
-            versionCode = 41301,
-            releaseDate = "2026-04-10",
-            highlights = listOf(
-                ReleaseHighlight(tipId = "action_view_all_metadata", title = R.string.help_release_413_metadata_viewer_title, description = R.string.help_release_413_metadata_viewer_desc, icon = HelpIcon.ofVector(Icons.Outlined.EditNote)),
-                ReleaseHighlight(tipId = "edit_crop", title = R.string.help_release_413_remade_editor_title, description = R.string.help_release_413_remade_editor_desc, icon = HelpIcon.ofVector(Icons.Outlined.Edit)),
-                ReleaseHighlight(tipId = "location_browse", title = R.string.help_release_413_maplibre_title, description = R.string.help_release_413_maplibre_desc, icon = HelpIcon.ofVector(Icons.Outlined.LocationOn))
-            )
-        ),
-        ReleaseNotes(
-            versionName = "4.1.2",
-            versionCode = 41202,
-            releaseDate = "2026-03-15",
-            highlights = listOf(
-                ReleaseHighlight(tipId = "timeline_group_similar", title = R.string.help_release_412_group_similar_title, description = R.string.help_release_412_group_similar_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = "viewer_default_editor", title = R.string.help_release_412_default_editor_title, description = R.string.help_release_412_default_editor_desc, icon = HelpIcon.ofVector(Icons.Outlined.Edit)),
-                ReleaseHighlight(tipId = "timeline_gif_animation", title = R.string.help_release_412_gif_animations_title, description = R.string.help_release_412_gif_animations_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections))
-            )
-        ),
-        ReleaseNotes(
-            versionName = "4.1.1",
-            versionCode = 41101,
-            releaseDate = "2026-02-15",
-            highlights = listOf(
-                ReleaseHighlight(tipId = "edit_backups", title = R.string.help_release_411_edit_backups_title, description = R.string.help_release_411_edit_backups_desc, icon = HelpIcon.ofVector(Icons.Outlined.SettingsBackupRestore)),
-                ReleaseHighlight(tipId = "basics_copy_clipboard", title = R.string.help_release_411_copy_clipboard_title, description = R.string.help_release_411_copy_clipboard_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = "edit_markup", title = R.string.help_release_411_enhanced_markup_title, description = R.string.help_release_411_enhanced_markup_desc, icon = HelpIcon.ofVector(Icons.Outlined.Draw)),
-                ReleaseHighlight(tipId = "timeline_fav_icon", title = R.string.help_release_411_fav_icon_title, description = R.string.help_release_411_fav_icon_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections))
-            )
-        ),
-        ReleaseNotes(
-            versionName = "4.1.0",
-            versionCode = 41001,
-            releaseDate = "2026-01-20",
-            highlights = listOf(
-                ReleaseHighlight(tipId = "search_ai", title = R.string.help_release_410_ai_search_title, description = R.string.help_release_410_ai_search_desc, icon = HelpIcon.ofVector(Icons.Outlined.ImageSearch)),
-                ReleaseHighlight(tipId = "ai_categories", title = R.string.help_release_410_smart_categories_title, description = R.string.help_release_410_smart_categories_desc, icon = HelpIcon.ofVector(Icons.Outlined.AutoAwesome)),
-                ReleaseHighlight(tipId = "personalize_colors", title = R.string.help_release_410_color_palette_title, description = R.string.help_release_410_color_palette_desc, icon = HelpIcon.ofVector(Icons.Outlined.Palette)),
-                ReleaseHighlight(tipId = "view_panorama", title = R.string.help_release_410_panorama_title, description = R.string.help_release_410_panorama_desc, icon = HelpIcon.ofVector(Icons.Outlined.Panorama)),
-                ReleaseHighlight(tipId = "view_motion_photo", title = R.string.help_release_410_motion_photos_title, description = R.string.help_release_410_motion_photos_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections))
-            )
-        ),
-        ReleaseNotes(
-            versionName = "4.0.0",
-            versionCode = 40001,
-            releaseDate = "2025-09-01",
-            highlights = listOf(
-                ReleaseHighlight(tipId = "location_browse", title = R.string.help_release_400_location_browsing_title, description = R.string.help_release_400_location_browsing_desc, icon = HelpIcon.ofVector(Icons.Outlined.LocationOn)),
-                ReleaseHighlight(tipId = "albums_pin", title = R.string.help_release_400_custom_thumbnails_title, description = R.string.help_release_400_custom_thumbnails_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = "gesture_selection", title = R.string.help_release_400_selection_sheet_title, description = R.string.help_release_400_selection_sheet_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = "nav_search", title = R.string.help_release_400_search_title, description = R.string.help_release_400_search_desc, icon = HelpIcon.ofVector(Icons.Outlined.ImageSearch)),
-                ReleaseHighlight(tipId = "nav_albums", title = R.string.help_release_400_list_albums_title, description = R.string.help_release_400_list_albums_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections)),
-                ReleaseHighlight(tipId = "view_lock_image", title = R.string.help_release_400_lock_images_title, description = R.string.help_release_400_lock_images_desc, icon = HelpIcon.ofVector(Icons.Outlined.Lock)),
-                ReleaseHighlight(tipId = "vault_video_streaming", title = R.string.help_release_400_vault_playback_title, description = R.string.help_release_400_vault_playback_desc, icon = HelpIcon.ofVector(Icons.Outlined.Lock)),
-                ReleaseHighlight(tipId = "basics_timeline", title = R.string.help_release_400_ui_refresh_title, description = R.string.help_release_400_ui_refresh_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections))
-            )
-        )
     )
     // endregion
 }

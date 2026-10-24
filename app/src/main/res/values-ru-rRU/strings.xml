@@ -411,4 +411,27 @@
     <string name="gallery_update_none">Совместимых обновлений пока нет</string>
     <string name="gallery_update_error">Не удалось проверить обновления. Попробуйте позже.</string>
     <string name="gallery_update_later">Позже</string>
+    <string name="gallery_release_424_notes_title">Изменения из ifny75/Gallery</string>
+    <string name="gallery_release_424_notes_desc">В разделе «Что нового» теперь описаны изменения этого форка Gallery. Связанные коммиты доступны в истории репозитория.</string>
+    <string name="gallery_release_423_delete_title">Корзина всегда под рукой</string>
+    <string name="gallery_release_423_delete_desc">Корзина и удаление метаданных стоят в начале панели выделения. Удаление фотографий требует подтверждения.</string>
+    <string name="gallery_release_422_scroll_title">Фотографии листаются вместе с заголовком</string>
+    <string name="gallery_release_422_scroll_desc">Фотографии начинают двигаться сразу, пока большой заголовок переходит в верхний бар. Исправлены возврат из поиска и анимации дат.</string>
+    <string name="gallery_release_422_glass_title">Размытие нижних панелей</string>
+    <string name="gallery_release_422_glass_desc">Навигация и панель выделения получили общую размытую подложку. Оптимизированы скролл и отображение миниатюр.</string>
+    <string name="gallery_release_422_metadata_title">Копии выбранных фото без метаданных</string>
+    <string name="gallery_release_422_metadata_desc">В редакторе и панели выделения можно сохранить новые статичные SDR PNG без EXIF, GPS и XMP. Перед сохранением показывается предупреждение; оригиналы остаются без изменений.</string>
+    <string name="gallery_release_422_appearance_title">Новое оформление и авторство</string>
+    <string name="gallery_release_422_appearance_desc">Раздел оформления показывает новый интерфейс Gallery, системные акценты и размытие. На странице авторов указаны ReFra, GrapheneOS Gallery и ifny75.</string>
+    <string name="gallery_release_422_updates_title">Обновления из этого репозитория</string>
+    <string name="gallery_release_422_updates_desc">Gallery проверяет релизы ifny75/Gallery, находит новую совместимую сборку и показывает плашку обновления. Скачивание и установка Android требуют подтверждения.</string>
+    <string name="gallery_release_421_design_title">Новый интерфейс Gallery</string>
+    <string name="gallery_release_421_design_desc">Фото, альбомы, поиск и корзина получили тёмный интерфейс со скруглёнными миниатюрами и акцентами системной темы.</string>
+    <string name="gallery_release_421_brand_title">Новое название и анимированный логотип</string>
+    <string name="gallery_release_421_brand_desc">Приложение переименовано в Gallery. При запуске четыре внешних элемента логотипа притягиваются к центральному пейзажу.</string>
+    <string name="gallery_release_421_access_title">Простой первый запуск</string>
+    <string name="gallery_release_421_access_desc">При первом запуске запрашивается доступ к фото и видео. Лишние шаги с другими разрешениями убраны.</string>
+    <string name="gallery_release_source">Изменения твоего репозитория Gallery</string>
+    <string name="gallery_release_source_description">История изменений ifny75/Gallery, которая обновляется вместе с кодом приложения.</string>
+    <string name="gallery_release_history">История коммитов на GitHub</string>
 </resources>

@@ -35,3 +35,13 @@ INTERNET produce intentionally offline builds and cannot check releases.
 The initial 4.2.2 preview establishes this release contract. A newer compatible
 published release is required to exercise a genuine upgrade; no fictitious version
 is advertised for testing.
+
+
+## In-app release notes
+
+What’s new lists the history of `ifny75/Gallery`, starting with this fork’s 4.2.1
+redesign. It is stored offline in `HelpRepository.ALL_RELEASES` with descriptions
+in English and Russian resources (`gallery_release_*`). Add an entry when changing
+the application version and use the fork’s actual changes/date. Do not reintroduce
+the upstream ReFra release history as the current fork changelog. The screen links
+to `https://github.com/ifny75/Gallery/commits/main/` for the complete commit history.

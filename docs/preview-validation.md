@@ -160,3 +160,17 @@ A genuine GitHub update offer was verified from installed 4.2.2 to published 4.2
 including the download confirmation and cached banner. The APK and release manifest
 are published in v4.2.3-preview. Gallery/Calculator are also hosted on valanium.com/apps;
 public APK downloads were read fully and checked against their SHA-256 values.
+
+
+## Gallery 4.2.4 preview
+
+What’s new now lists the actual ifny75/Gallery fork releases (4.2.1–4.2.4), with
+English/Russian descriptions and a link to that repository’s commit history.
+The upstream ReFra release list was removed from this screen. Entries show full
+text and use static cards rather than non-functional tutorial buttons.
+
+The optimized preview build and lintVital passed; every new release-string reference
+was checked against both locale resources. The APK signature verified and the update
+manifest was generated from the actual signed APK (version code 421044).
+An on-device check was attempted but ADB reported no connected devices; no installation
+or visual device verification is claimed for this version.
