@@ -1,4 +1,6 @@
 <div align="center">
+<tr>
+    <td><img src="./screenshots/main_photo.png" width="100%" /></td>
 
 # Gallery
 
