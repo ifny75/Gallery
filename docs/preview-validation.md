@@ -209,3 +209,40 @@ Validated on the connected Pixel 10 / Android 17 on 2026-10-25.
 
 The release manifest is generated from the actual signed APK. Updates continue
 using ifny75/Gallery GitHub Releases, never upstream ReFra releases.
+
+## Gallery 4.2.6 preview — full first row after a fast return
+
+The reported clipping was captured on the connected Pixel before any navigation.
+Scaffold reuses its PaddingValues object while resizing the top bar. Timeline
+remembered a concrete copy keyed by that object, so the grid could retain the
+compact top inset after the header expanded. Both regular and mosaic timelines
+now read current inset values. Position-bound headers also ignore nested-scroll
+height writes, leaving measured list position as the single height owner; the
+Appearance toolbar explicitly retains gesture-driven behavior.
+
+`tools/Test-GalleryTopReturn.ps1` performs repeated fast flings down and back to
+start, then checks the expanded header, first-photo position and complete square
+bounds. Use portrait Photos with English UI and a populated library. Set the
+layout to Mosaic and pass `-Mosaic` to skip the square-shape assertion there.
+The script does not create or delete media, or change preferences.
+
+Validation on Pixel 10 / Android 17, 2026-10-25:
+
+- Regression failed on 4.2.5: first photo top 520 px, expanded header bottom
+  635.5 px (overlap). The bug was reproduced before installing the fix.
+- Debug: three fast-return cycles passed with the release card, three without
+  it (first photo top 814 px), and three in Mosaic (806 px). Original Grid
+  preference restored after Mosaic verification.
+- Optimized 4.2.6-preview: three cycles passed without the release card;
+  complete first row starts at 814 px below the same 635.5 px header boundary.
+  Before and after screenshots were captured locally, not committed as they
+  contain the device photo library.
+- Short-scroll regression passed: photo moved 160 px while the title partially
+  collapsed. Fourteen JVM tests passed. assemble and lintVital passed; full lint
+  was not rerun (the existing full-lint limitations are recorded above).
+- Six scroll cycles: 896 frames, p95 10 ms, one deadline-janky frame (0.11%);
+  legacy classification: 91 frames (10.16%). Sample-specific, not a zero-jank
+  guarantee. This passes the existing p95 <=32 ms regression threshold.
+- Signed optimized APK installed over the previous preview, package
+  com.dot.gallery.debug, actual versionCode 421064. Signature verified. No user
+  media were modified. The temporary keep-awake override was restored.

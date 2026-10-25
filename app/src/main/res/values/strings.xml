@@ -1097,4 +1097,6 @@
     <string name="gallery_release_425_scroll_desc">Headers follow the actual list position, including the scrollbar. When scrolling back, the title stays in the toolbar until the start of the list.</string>
     <string name="gallery_release_425_crop_title">Save photo crops directly</string>
     <string name="gallery_release_425_crop_desc">Save now applies the selected crop even without other edits, including small crops. The original is preserved when saving a copy.</string>
+    <string name="gallery_release_426_scroll_title">Complete photos after returning to the top</string>
+    <string name="gallery_release_426_scroll_desc">Fixed stale grid padding after a fast return to the beginning. The first photo row now stays below the expanded header in both grid layouts. Overscroll no longer independently changes the header height.</string>
 </resources>

@@ -210,12 +210,12 @@ fun TimelineScreen(
                         mediaState.value.headers.toMutableStateList()
                     }
                 }
-                val mosaicPaddingValues = remember(paddingValues, it) {
-                    PaddingValues(
-                        top = it.calculateTopPadding(),
-                        bottom = paddingValues.calculateBottomPadding() + 128.dp
-                    )
-                }
+                // Scaffold keeps the same PaddingValues instance while the header resizes.
+                // Read its current values; remembering by identity freezes an old toolbar height.
+                val mosaicPaddingValues = PaddingValues(
+                    top = it.calculateTopPadding(),
+                    bottom = paddingValues.calculateBottomPadding() + 128.dp
+                )
                     MosaicPinchZoomLayout(
                         state = mosaicPinchState,
                         indicatorTopPadding = mosaicPaddingValues.calculateTopPadding() + 16.dp,
@@ -261,15 +261,11 @@ fun TimelineScreen(
                     MediaGridView(
                         mediaState = mediaState,
                         metadataState = metadataState,
-                        paddingValues = remember(paddingValues, it) {
-                            PaddingValues(
-                                top = it.calculateTopPadding(),
-                                        bottom = paddingValues.calculateBottomPadding() + 128.dp
-                            )
-                        },
-                        searchBarPaddingTop = remember(paddingValues) {
-                            paddingValues.calculateTopPadding()
-                        },
+                        paddingValues = PaddingValues(
+                            top = it.calculateTopPadding(),
+                            bottom = paddingValues.calculateBottomPadding() + 128.dp
+                        ),
+                        searchBarPaddingTop = paddingValues.calculateTopPadding(),
                         showSearchBar = true,
                         allowSelection = true,
                         canScroll = canScroll,

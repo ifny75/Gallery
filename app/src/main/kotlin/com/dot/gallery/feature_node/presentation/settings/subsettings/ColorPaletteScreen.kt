@@ -49,7 +49,7 @@ fun ColorPaletteScreen() {
     var contrast by Settings.Misc.rememberAutoContrast()
     var transitions by Settings.Misc.rememberSharedElements()
     val isDark = isDarkTheme()
-    val behavior = rememberGalleryScrollBehavior()
+    val behavior = rememberGalleryScrollBehavior(positionDriven = false)
     val current = MaterialTheme.colorScheme
     val previewColors = remember(seed, isDark, amoled, current) {
         val chosen = when (seed) {

@@ -734,6 +734,14 @@ object HelpRepository {
     // Fork release history: update alongside each ifny75/Gallery release.
     private val ALL_RELEASES: List<ReleaseNotes> = listOf(
         ReleaseNotes(
+            versionName = "4.2.6",
+            versionCode = 42106,
+            releaseDate = "2026-10-25",
+            highlights = listOf(
+                ReleaseHighlight(title = R.string.gallery_release_426_scroll_title, description = R.string.gallery_release_426_scroll_desc, icon = HelpIcon.ofVector(Icons.Outlined.Collections))
+            )
+        ),
+        ReleaseNotes(
             versionName = "4.2.5",
             versionCode = 42105,
             releaseDate = "2026-10-25",

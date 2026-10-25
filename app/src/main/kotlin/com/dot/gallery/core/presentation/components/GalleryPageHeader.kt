@@ -27,9 +27,9 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun rememberGalleryScrollBehavior(): TopAppBarScrollBehavior {
+fun rememberGalleryScrollBehavior(positionDriven: Boolean = true): TopAppBarScrollBehavior {
     val delegate = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    return remember(delegate) {
+    return remember(delegate, positionDriven) {
         object : TopAppBarScrollBehavior by delegate {
             override val nestedScrollConnection = object : NestedScrollConnection {
                 override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
@@ -38,9 +38,11 @@ fun rememberGalleryScrollBehavior(): TopAppBarScrollBehavior {
                 }
                 override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
                     delegate.state.contentOffset += consumed.y
-                    // Reverse scrolling must not expand the title while content is still below
-                    // the start. Only unconsumed downward scroll can expand it at the top.
-                    delegate.state.heightOffset += if (consumed.y < 0f) consumed.y else available.y.coerceAtLeast(0f)
+                    // Bound lists own the height through their measured position. Overscroll
+                    // after a fast fling must not overwrite that position with a second offset.
+                    if (!positionDriven) {
+                        delegate.state.heightOffset += if (consumed.y < 0f) consumed.y else available.y.coerceAtLeast(0f)
+                    }
                     return Offset.Zero
                 }
             }
