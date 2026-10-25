@@ -183,18 +183,18 @@ class EditActivity : ComponentActivity() {
                                     finish()
                                 },
                                 onFail = {
-
+                                    Toast.makeText(this@EditActivity, R.string.error_toast, Toast.LENGTH_LONG).show()
                                 }
                             )
                         },
                         onAdjustItemLongClick = viewModel::removeKind,
-                        onAdjustmentChange = viewModel::applyAdjustment,
+                        onAdjustmentChange = { viewModel.applyAdjustment(it) },
                         onAdjustmentPreview = viewModel::previewAdjustment,
                         onToggleFilter = viewModel::toggleFilter,
                         commitFilter = viewModel::commitFilter,
                         removeLast = viewModel::removeLast,
-                        onCropRect = { normalizedRect ->
-                            viewModel.applyAdjustment(Crop(normalizedRect))
+                        onCropRect = { normalizedRect, onApplied ->
+                            viewModel.applyAdjustment(Crop(normalizedRect), onApplied)
                         },
                         addPath = viewModel::addPath,
                         clearPathsUndone = viewModel::clearPathsUndone,

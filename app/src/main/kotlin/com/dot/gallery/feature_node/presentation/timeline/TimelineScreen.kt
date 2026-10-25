@@ -45,6 +45,7 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.dot.gallery.core.presentation.components.BindGalleryHeader
 import com.dot.gallery.core.presentation.components.rememberGalleryScrollBehavior
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -193,6 +194,7 @@ fun TimelineScreen(
                     )
                 )
                 val mosaicGridState = mosaicPinchState.gridState
+                BindGalleryHeader(headerBehavior, mosaicGridState)
 
                 LaunchedEffect(mosaicPinchState.isZooming) {
                     lastMosaicCellIndex = mosaicPinchState.currentColumnsIndex
@@ -255,6 +257,7 @@ fun TimelineScreen(
                     modifier = Modifier.hazeSource(LocalHazeState.current),
                     indicatorTopPadding = it.calculateTopPadding() + 16.dp,
                 ) {
+                    BindGalleryHeader(headerBehavior, gridState)
                     MediaGridView(
                         mediaState = mediaState,
                         metadataState = metadataState,

@@ -174,3 +174,38 @@ was checked against both locale resources. The APK signature verified and the up
 manifest was generated from the actual signed APK (version code 421044).
 An on-device check was attempted but ADB reported no connected devices; no installation
 or visual device verification is claimed for this version.
+
+## Gallery 4.2.5 preview — scrollbar headers and crop saving
+
+Validated on the connected Pixel 10 / Android 17 on 2026-10-25.
+
+- Headers observe the active LazyGridState / LazyListState, including scrollbar
+  jumps. Photos, Albums, Search, Library and Bin use the same position binding;
+  unrelated legacy album toolbars retain their existing behavior.
+- A scrollbar drag starting near the beginning moved All pictures from bounds
+  [353,348][832,461] to [110,220][420,293]. The selected thumb/date bubble was
+  captured during the drag. Reverse scrolling deep in the grid changed the
+  visible photos while the compact title bounds stayed unchanged.
+- The short-scroll regression passed: the same photo moved 80 px while the title
+  partially collapsed. The script now requires an expanded starting header and
+  no longer expects the title to snap open after a short gesture.
+- Crop-only saving passed through the editor UI in both debug and optimized
+  preview builds. A 640x480 fixture produced copies of 623x466 and 626x470 after
+  small handle drags and Save Copy, without pressing Apply crop or adding filters.
+  The original remained 640x480. Save was disabled before editing and enabled
+  after changing the frame. Temporary fixtures and generated copies were removed.
+- 14 JVM tests passed, including three header-position regressions. Three device
+  CropTest cases passed: one-pixel crop plus PNG round-trip, unchanged/subpixel
+  frame detection, and safe bottom-right bounds. The test APK was uninstalled.
+- Optimized preview installed successfully as com.dot.gallery.debug,
+  version 4.2.5-preview / actual versionCode 421054. APK signature verified.
+- Six scroll cycles: 882 rendered frames, p95 8 ms, 0 deadline-janky frames;
+  legacy gfxinfo classification reports 23 janky frames (2.61%). This is a
+  device/sample measurement, not a guarantee for every library or device.
+- assemble and lintVital passed. Full lint remains failing: 1,641 errors,
+  mostly MissingTranslation (1,593), plus existing API/resource/Compose findings.
+  Four new release-note strings intentionally have English/Russian translations;
+  other locales fall back to English. Full lint is not claimed clean.
+
+The release manifest is generated from the actual signed APK. Updates continue
+using ifny75/Gallery GitHub Releases, never upstream ReFra releases.

@@ -19,6 +19,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -66,6 +68,7 @@ fun ImageCropper(
     onCropStart: () -> Unit,
     onCropSuccess: (ImageBitmap) -> Unit,
     onCropRect: ((android.graphics.RectF) -> Unit)? = null,
+    onCropSelectionChanged: ((android.graphics.RectF) -> Unit)? = null,
     backgroundModifier: Modifier = Modifier
 ) {
 
@@ -139,6 +142,18 @@ fun ImageCropper(
             cropProperties = cropProperties,
             keys = resetKeys
         )
+
+        val selectionCallback by rememberUpdatedState(onCropSelectionChanged)
+        LaunchedEffect(cropState, rect, imageBitmap) {
+            snapshotFlow { cropState.cropRect }.collect { selection ->
+                selectionCallback?.invoke(android.graphics.RectF(
+                    (rect.left + selection.left) / imageBitmap.width,
+                    (rect.top + selection.top) / imageBitmap.height,
+                    (rect.left + selection.right) / imageBitmap.width,
+                    (rect.top + selection.bottom) / imageBitmap.height
+                ))
+            }
+        }
 
         val isHandleTouched by remember(cropState) {
             derivedStateOf {

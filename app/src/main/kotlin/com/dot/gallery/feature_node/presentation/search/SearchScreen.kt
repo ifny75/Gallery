@@ -64,6 +64,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
+import com.dot.gallery.core.presentation.components.BindGalleryHeader
 import com.dot.gallery.core.presentation.components.rememberGalleryScrollBehavior
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -348,7 +349,10 @@ fun SearchScreen(
                     enter = enterAnimation,
                     exit = exitAnimation
                 ) {
+                    val headerListState = androidx.compose.foundation.lazy.rememberLazyListState()
+                    BindGalleryHeader(headerBehavior, headerListState)
                     LazyColumn(
+                        state = headerListState,
                         modifier = Modifier.hazeSource(LocalHazeState.current),
                         verticalArrangement = Arrangement.spacedBy(1.dp)
                     ) {
@@ -664,6 +668,7 @@ fun SearchScreen(
                             )
                         )
                         val mosaicGridState = mosaicPinchState.gridState
+                        BindGalleryHeader(headerBehavior, mosaicGridState)
 
                         LaunchedEffect(mosaicPinchState.isZooming) {
                             lastMosaicCellIndex = mosaicPinchState.currentColumnsIndex
@@ -725,6 +730,7 @@ fun SearchScreen(
                             modifier = Modifier.hazeSource(LocalHazeState.current),
                             indicatorTopPadding = contentPadding.calculateTopPadding() + 16.dp,
                         ) {
+                            BindGalleryHeader(headerBehavior, gridState)
                             MediaGridView(
                                 mediaState = mediaState,
                                 metadataState = metadataState,

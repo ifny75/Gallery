@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.dot.gallery.core.presentation.components.BindGalleryHeader
 import com.dot.gallery.core.presentation.components.rememberGalleryScrollBehavior
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -166,6 +167,7 @@ fun AlbumsScreen(
                         modifier = Modifier.hazeSource(LocalHazeState.current),
                         indicatorTopPadding = innerPaddingValues.calculateTopPadding() + 16.dp,
                     ) {
+                        BindGalleryHeader(headerBehavior, gridState)
                         LaunchedEffect(gridState.isScrollInProgress) {
                             isScrolling.value = gridState.isScrollInProgress
                         }
@@ -358,6 +360,7 @@ fun AlbumsScreen(
                     LaunchedEffect(listState.isScrollInProgress) {
                         isScrolling.value = listState.isScrollInProgress
                     }
+                    BindGalleryHeader(headerBehavior, listState)
                     LazyColumn(
                         state = listState,
                         modifier = Modifier

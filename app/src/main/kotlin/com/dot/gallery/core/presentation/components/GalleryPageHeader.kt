@@ -3,12 +3,13 @@ package com.dot.gallery.core.presentation.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.draw.clipToBounds
@@ -32,22 +33,48 @@ fun rememberGalleryScrollBehavior(): TopAppBarScrollBehavior {
         object : TopAppBarScrollBehavior by delegate {
             override val nestedScrollConnection = object : NestedScrollConnection {
                 override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                    delegate.state.heightOffset += available.y
                     // Observe the gesture; never spend the photo grid's scroll on the title.
                     return Offset.Zero
                 }
                 override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
                     delegate.state.contentOffset += consumed.y
+                    // Reverse scrolling must not expand the title while content is still below
+                    // the start. Only unconsumed downward scroll can expand it at the top.
+                    delegate.state.heightOffset += if (consumed.y < 0f) consumed.y else available.y.coerceAtLeast(0f)
                     return Offset.Zero
-                }
-                override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                    delegate.nestedScrollConnection.onPostFling(consumed, available)
-                    return Velocity.Zero
                 }
             }
         }
     }
 }
+
+/** Observe position, including scrollbar jumps and scrollToItem (no nested gesture). */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BindGalleryHeader(behavior: TopAppBarScrollBehavior, state: LazyGridState) {
+    BindGalleryHeaderPosition(behavior) { state.firstVisibleItemIndex to state.firstVisibleItemScrollOffset }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BindGalleryHeader(behavior: TopAppBarScrollBehavior, state: LazyListState) {
+    BindGalleryHeaderPosition(behavior) { state.firstVisibleItemIndex to state.firstVisibleItemScrollOffset }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BindGalleryHeaderPosition(behavior: TopAppBarScrollBehavior, position: () -> Pair<Int, Int>) {
+    val latestPosition by rememberUpdatedState(position)
+    LaunchedEffect(behavior) {
+        snapshotFlow { Triple(latestPosition().first, latestPosition().second, behavior.state.heightOffsetLimit) }
+            .collect { (index, offset, limit) ->
+                behavior.state.heightOffset = galleryHeaderOffset(index, offset, limit)
+            }
+    }
+}
+
+internal fun galleryHeaderOffset(index: Int, offset: Int, limit: Float): Float =
+    if (index > 0) limit else (-offset.toFloat()).coerceIn(limit, 0f)
 
 /** One title moves and scales into a persistent toolbar; no duplicated/teleporting text. */
 @OptIn(ExperimentalMaterial3Api::class)

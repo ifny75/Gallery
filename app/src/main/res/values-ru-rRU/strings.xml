@@ -434,4 +434,8 @@
     <string name="gallery_release_source">Изменения твоего репозитория Gallery</string>
     <string name="gallery_release_source_description">История изменений ifny75/Gallery, которая обновляется вместе с кодом приложения.</string>
     <string name="gallery_release_history">История коммитов на GitHub</string>
+    <string name="gallery_release_425_scroll_title">Заголовки при прокрутке</string>
+    <string name="gallery_release_425_scroll_desc">Заголовки следуют за положением списка, включая прокрутку ползунком. При движении назад заголовок остаётся в верхней панели до начала списка.</string>
+    <string name="gallery_release_425_crop_title">Сохранение обрезки фото</string>
+    <string name="gallery_release_425_crop_desc">Кнопка сохранения применяет выбранную рамку без дополнительных правок, в том числе при небольшой обрезке. При сохранении копии оригинал остаётся без изменений.</string>
 </resources>

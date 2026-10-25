@@ -135,7 +135,7 @@ fun EditScreen2(
     onToggleFilter: (ImageFilter) -> Unit,
     commitFilter: () -> Unit = {},
     removeLast: () -> Unit,
-    onCropRect: (android.graphics.RectF) -> Unit,
+    onCropRect: (android.graphics.RectF, () -> Unit) -> Unit,
     addPath: (Path, PathProperties) -> Unit,
     clearPathsUndone: () -> Unit,
     setCurrentPosition: (Offset) -> Unit,
@@ -215,6 +215,23 @@ fun EditScreen2(
     }
 
     var cropState by rememberSaveable { mutableStateOf(CropState(showCropper = true)) }
+    var cropSelection by remember(currentImage) { mutableStateOf<android.graphics.RectF?>(null) }
+    val hasPendingCrop = currentImage?.let { bitmap ->
+        cropSelection?.let { com.dot.gallery.feature_node.presentation.edit.adjustments.hasPendingCrop(it, bitmap.width, bitmap.height) }
+    } == true
+    var applyingCrop by remember { mutableStateOf(false) }
+    val saveEdits: (() -> Unit) -> Unit = { save ->
+        val selection = cropSelection
+        if (hasPendingCrop && selection != null) {
+            applyingCrop = true
+            onCropRect(android.graphics.RectF(selection)) {
+                cropSelection = null
+                applyingCrop = false
+                save()
+            }
+        } else save()
+    }
+
 
     // Grid overlay state
     var showGridOverlay by remember { mutableStateOf(false) }
@@ -334,8 +351,8 @@ fun EditScreen2(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Button(
-                        onClick = onSaveCopy,
-                        enabled = isChanged && canSave && !isProcessing,
+                        onClick = { saveEdits(onSaveCopy) },
+                        enabled = (isChanged || hasPendingCrop) && canSave && !isProcessing && !isSaving && !applyingCrop,
                         shape = CircleShape,
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                         colors = ButtonDefaults.buttonColors(
@@ -370,7 +387,7 @@ fun EditScreen2(
                         )
                     }
                     // Only show 3-dot menu if there are actions available
-                    val hasMenuActions = (isChanged && canOverride) || isChanged || hasOriginalBackup
+                    val hasMenuActions = isChanged || hasPendingCrop || hasOriginalBackup
                     AnimatedVisibility(
                         visible = hasMenuActions,
                         enter = enterAnimation,
@@ -379,7 +396,7 @@ fun EditScreen2(
                     Box {
                         IconButton(
                             onClick = { showMenu = true },
-                            enabled = !isProcessing,
+                            enabled = !isProcessing && !isSaving && !applyingCrop,
                             modifier = Modifier.size(40.dp)
                         ) {
                             Icon(
@@ -393,7 +410,7 @@ fun EditScreen2(
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false }
                         ) {
-                            if (isChanged && canOverride) {
+                            if ((isChanged || hasPendingCrop) && canOverride) {
                                 DropdownMenuItem(
                                     text = {
                                         Column {
@@ -407,11 +424,11 @@ fun EditScreen2(
                                     },
                                     onClick = {
                                         showMenu = false
-                                        onOverride()
+                                        saveEdits(onOverride)
                                     }
                                 )
                             }
-                            if (isChanged) {
+                            if (isChanged || hasPendingCrop) {
                                 DropdownMenuItem(
                                     text = {
                                         Column {
@@ -425,7 +442,7 @@ fun EditScreen2(
                                     },
                                     onClick = {
                                         showMenu = false
-                                        onSaveCopy()
+                                        saveEdits(onSaveCopy)
                                     }
                                 )
                             }
@@ -630,9 +647,14 @@ fun EditScreen2(
                             currentPathProperty = currentPathProperty,
                             isSupportingPanel = navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Expanded,
                             onCropRect = {
-                                onCropRect(it)
-                                cropState = cropState.copy(isCropping = false)
+                                applyingCrop = true
+                                onCropRect(it) {
+                                    cropSelection = null
+                                    applyingCrop = false
+                                    cropState = cropState.copy(isCropping = false)
+                                }
                             },
+                            onCropSelectionChanged = { cropSelection = it },
                             addPath = addPath,
                             clearPathsUndone = clearPathsUndone,
                             setCurrentPosition = setCurrentPosition,

@@ -77,6 +77,7 @@ fun ImageViewer(
     onLongClick: (() -> Unit)? = null,
     onCropStart: () -> Unit = {},
     onCropRect: (RectF) -> Unit,
+    onCropSelectionChanged: (RectF) -> Unit = {},
     addPath: (Path, PathProperties) -> Unit,
     clearPathsUndone: () -> Unit,
     setCurrentPosition: (Offset) -> Unit,
@@ -301,6 +302,7 @@ fun ImageViewer(
                     onCropStart = onCropStart,
                     onCropSuccess = { },
                     onCropRect = onCropRect,
+                    onCropSelectionChanged = onCropSelectionChanged,
                 )
             }
         }

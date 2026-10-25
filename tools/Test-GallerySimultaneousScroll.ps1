@@ -25,13 +25,16 @@ $ui = Read-Ui 'navigation'
 $tab = $ui.SelectSingleNode("//node[@text='Photos']")
 $c = Bounds $tab
 & $Adb -s $Serial shell input tap ([int](($c[0]+$c[2])/2)) ([int](($c[1]+$c[3])/2))
-& $Adb -s $Serial shell input swipe 540 600 540 1900 400
-& $Adb -s $Serial shell input swipe 540 600 540 1900 400
+# A previous scrollbar test may leave the grid near the end of a large library.
+for ($i = 0; $i -lt 15; $i++) {
+    & $Adb -s $Serial shell input swipe 540 600 540 1900 250
+}
 $before = Read-Ui 'before'
 $titleBefore = Bounds ($before.SelectSingleNode("//node[@text='All pictures']"))
+if ($titleBefore[1] -lt 300) { throw 'Invalid sample: return Photos to the beginning before running this test.' }
 $photo = $before.SelectNodes('//node') | Where-Object { $_.'content-desc' -match '\.(jpg|jpeg|png|webp)$' } | Select-Object -First 1
 $photoBefore = Bounds $photo
-# Shorter than half of the collapsing title range: the title snaps back open.
+# A short gesture must move both photos and the title without snapping back open.
 # The old pre-scroll consumer spent this entire gesture on the title and moved no photos.
 & $Adb -s $Serial shell input swipe 540 1600 540 1500 1200
 $after = Read-Ui 'after'
@@ -39,5 +42,6 @@ $titleAfter = Bounds ($after.SelectSingleNode("//node[@text='All pictures']"))
 $samePhoto = $after.SelectNodes('//node') | Where-Object { $_.'content-desc' -eq $photo.'content-desc' } | Select-Object -First 1
 $photoAfter = Bounds $samePhoto
 if ($photoBefore[1] - $photoAfter[1] -lt 30) { throw 'Photos did not move during the short header gesture.' }
-if (($titleAfter[3]-$titleAfter[1]) -lt 0.9*($titleBefore[3]-$titleBefore[1])) { throw 'Invalid sample: title collapsed completely.' }
-"Passed: photo moved $($photoBefore[1]-$photoAfter[1]) px while the title remained expanded."
+if ($titleAfter[1] -ge $titleBefore[1]) { throw 'Title did not follow the short scroll.' }
+if (($titleAfter[3]-$titleAfter[1]) -lt 0.7*($titleBefore[3]-$titleBefore[1])) { throw 'Invalid sample: title collapsed completely.' }
+"Passed: photo moved $($photoBefore[1]-$photoAfter[1]) px while the title partially collapsed."

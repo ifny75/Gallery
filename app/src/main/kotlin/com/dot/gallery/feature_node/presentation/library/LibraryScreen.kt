@@ -50,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.dot.gallery.core.presentation.components.BindGalleryHeader
 import com.dot.gallery.core.presentation.components.rememberGalleryScrollBehavior
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
@@ -214,6 +215,7 @@ fun LibraryScreen(
             modifier = Modifier.hazeSource(LocalHazeState.current),
             indicatorTopPadding = it.calculateTopPadding() + 16.dp,
         ) {
+            BindGalleryHeader(headerBehavior, gridState)
             LaunchedEffect(gridState.isScrollInProgress) {
                 isScrolling.value = gridState.isScrollInProgress
             }

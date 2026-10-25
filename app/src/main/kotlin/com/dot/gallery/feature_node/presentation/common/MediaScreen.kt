@@ -7,6 +7,8 @@ package com.dot.gallery.feature_node.presentation.common
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import com.dot.gallery.core.presentation.components.BindGalleryHeader
+import com.dot.gallery.core.presentation.components.rememberGalleryScrollBehavior
 import com.dot.gallery.core.presentation.components.GalleryPageHeader
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -114,11 +116,12 @@ fun <T: Media> MediaScreen(
 ) {
     val showSearchBar = remember(albumId, target) { albumId == -1L && target == null }
     var canScroll by rememberSaveable { mutableStateOf(true) }
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        state = rememberTopAppBarState(),
-        canScroll = { canScroll },
-        flingAnimationSpec = null
+    val isBin = target == com.dot.gallery.core.Constants.Target.TARGET_TRASH
+    val galleryBehavior = rememberGalleryScrollBehavior()
+    val legacyBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        state = rememberTopAppBarState(), canScroll = { canScroll }, flingAnimationSpec = null
     )
+    val scrollBehavior = if (isBin) galleryBehavior else legacyBehavior
     var lastCellIndex by rememberGridSize()
 
     val dpCacheWindow = LazyLayoutCacheWindow(ahead = 200.dp, behind = 100.dp)
@@ -235,6 +238,7 @@ fun <T: Media> MediaScreen(
                         )
                     )
                     val mosaicGridState = mosaicPinchState.gridState
+                    if (isBin) BindGalleryHeader(scrollBehavior, mosaicGridState)
 
                     LaunchedEffect(mosaicPinchState.isZooming) {
                         lastMosaicCellIndex = mosaicPinchState.currentColumnsIndex
@@ -304,6 +308,7 @@ fun <T: Media> MediaScreen(
                     modifier = Modifier.hazeSource(LocalHazeState.current),
                     indicatorTopPadding = it.calculateTopPadding() + 16.dp,
                 ) {
+                    if (isBin) BindGalleryHeader(scrollBehavior, gridState)
                     MediaGridView(
                         mediaState = mediaState,
                         metadataState = metadataState,

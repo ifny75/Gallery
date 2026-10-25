@@ -497,9 +497,10 @@ class EditViewModel @Inject constructor(
         }
     }
 
-    fun applyAdjustment(adjustment: Adjustment) {
+    fun applyAdjustment(adjustment: Adjustment, onApplied: () -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
             _isProcessing.value = true
+            if (adjustment is com.dot.gallery.feature_node.presentation.edit.adjustments.Crop) flattenComposedMatrix()
             printDebug("Applying adjustment: $adjustment")
             val filters = _appliedAdjustments.value
             clearRedoStack()
@@ -559,6 +560,7 @@ class EditViewModel @Inject constructor(
 
             updateUndoRedoState()
             _isProcessing.value = false
+            withContext(Dispatchers.Main) { onApplied() }
         }
     }
 

@@ -1093,4 +1093,8 @@
     <string name="gallery_release_source">Changes from your Gallery repository</string>
     <string name="gallery_release_source_description">Release notes for ifny75/Gallery, maintained alongside the application code.</string>
     <string name="gallery_release_history">View commits on GitHub</string>
+    <string name="gallery_release_425_scroll_title">Reliable page headers</string>
+    <string name="gallery_release_425_scroll_desc">Headers follow the actual list position, including the scrollbar. When scrolling back, the title stays in the toolbar until the start of the list.</string>
+    <string name="gallery_release_425_crop_title">Save photo crops directly</string>
+    <string name="gallery_release_425_crop_desc">Save now applies the selected crop even without other edits, including small crops. The original is preserved when saving a copy.</string>
 </resources>
